@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "679853291676",
+    "firebase_url": "https://nutshell-ec331.firebaseio.com",
+    "project_id": "nutshell-ec331",
+    "storage_bucket": "nutshell-ec331.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:679853291676:android:a837196ad1689381",
+        "android_client_info": {
+          "package_name": "com.jackie.nutshell"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1JeNVRqbFIIvdZf2KsNtzHAxy4c1iX8o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "679853291676-p0ckd8112mernuugt655bcunjll6shmv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "679853291676-06c71oce5jccelg2pjgrefa58vv561i6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "santoso.Nutshell"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
