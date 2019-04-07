@@ -19,6 +19,14 @@
         <activity android:name=".ExploreActivity"
             android:theme = "@style/AppTheme.NoActionBar">
         </activity>
+
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
+        <activity android:name=".SignUpActivity" />
+        <activity android:name=".SetupActivity"></activity>
     </application>
 
 </manifest>
