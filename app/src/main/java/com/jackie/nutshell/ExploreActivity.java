@@ -1,13 +1,16 @@
 package com.jackie.nutshell;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 
 public class ExploreActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -23,6 +26,9 @@ public class ExploreActivity extends AppCompatActivity implements NavigationView
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle("Explore");
+        //***
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
 
         drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -37,6 +43,28 @@ public class ExploreActivity extends AppCompatActivity implements NavigationView
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new ExploreFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_explore);
+        }
+    }
+
+    /** Creates all the menu options for the toolbar (the add button). */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
+
+    /** Handles selection of options for the Drawer. */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_addProj:
+                toolbar.setTitle("New Project");
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new AddProjFragment()).commit();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -63,6 +91,12 @@ public class ExploreActivity extends AppCompatActivity implements NavigationView
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new ProjectsFragment()).commit();
                 break;
+            case R.id.nav_addProj:
+                toolbar.setTitle("New Project");
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new AddProjFragment()).commit();
+                break;
+
         }
 
         drawer.closeDrawer(GravityCompat.START);
