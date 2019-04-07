@@ -1,5 +1,6 @@
 package com.jackie.nutshell;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,9 +10,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
-public class ExploreFragment extends Fragment {
+import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
+public class ExploreFragment extends Fragment implements View.OnClickListener {
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter mAdapter;
@@ -26,7 +29,24 @@ public class ExploreFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_explore, container, false);
+        View v = inflater.inflate(R.layout.fragment_explore, container, false);
+
+        Button viewbutton = getView().findViewById(R.id.viewbtn);
+        viewbutton.setOnClickListener(this);
+
+        return v;
+
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.viewbtn:
+                Intent intent = new Intent(getActivity(), ViewActivity.class);
+                startActivity(intent);
+                break;
+        }
     }
 
     @Override
@@ -41,6 +61,8 @@ public class ExploreFragment extends Fragment {
         // specify an adapter (see also next example)
         mAdapter = new MyAdapter(myStringArray);
         mRecyclerView.setAdapter(mAdapter);
+
+
 
     }
 
