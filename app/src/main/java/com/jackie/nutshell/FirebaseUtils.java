@@ -27,8 +27,8 @@ public class FirebaseUtils {
 
     /** Returns a Firebase Database Reference to the SOCIALS path.
      * @return: DatabaseReference object. */
-    public static DatabaseReference getSocialsDatabaseRef() {
-        return FirebaseDatabase.getInstance().getReference("socials");
+    public static DatabaseReference getUsersDatabaseRef() {
+        return FirebaseDatabase.getInstance().getReference("users");
     }
 
     /** Retrieves the Firebase User for Authentication purposes.
