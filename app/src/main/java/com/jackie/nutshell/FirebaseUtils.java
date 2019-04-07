@@ -42,4 +42,5 @@ public class FirebaseUtils {
     public static FirebaseAuth getFirebaseAuth() {
         return FirebaseAuth.getInstance();
     }
+
 }
