@@ -85,7 +85,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             Toast.makeText(this, "Please make your password at least 6 characters long!", Toast.LENGTH_LONG).show();
         } else if (!password.equals(confirmPass)) {
             Toast.makeText(this, "Passwords do not match!", Toast.LENGTH_LONG).show();
-        } else if (checkUsername(username)) {
+        } else {
             // If everything is fine, then create a user with his/her email and password.
             // Could put this in onDataChange maybe??
             mAuth.createUserWithEmailAndPassword(email, password)
