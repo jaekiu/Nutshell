@@ -26,10 +26,11 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.signout:
-                Intent i2 = new Intent(SetupActivity.this, LoginActivity.class);
-                FirebaseAuth.getInstance().signOut();
-                Toast.makeText(this, "You are now signed out.", Toast.LENGTH_SHORT).show();
-                startActivity(i2);
+//                Intent i2 = new Intent(SetupActivity.this, LoginActivity.class);
+//                FirebaseAuth.getInstance().signOut();
+//                Toast.makeText(this, "You are now signed out.", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(SetupActivity.this, ExploreActivity.class);
+                startActivity(i);
         }
     }
 }
