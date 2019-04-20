@@ -9,5 +9,10 @@
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_add_circle_outline_black_24dp"/>
 
+    <item android:id="@+id/nav_submitProj"
+        android:title="SubmitProj"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_check_black_24dp"/>
+
 
 </menu>

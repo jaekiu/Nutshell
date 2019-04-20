@@ -1,8 +1,10 @@
 package com.jackie.nutshell;
 
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -13,10 +15,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class ExploreActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
     private Toolbar toolbar;
+    private List<String> messages = Arrays.asList("Explore", "Logout", "Profile", "Projects", "New Project");
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +46,13 @@ public class ExploreActivity extends AppCompatActivity implements NavigationView
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+
+
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new ExploreFragment()).commit();
+            ExploreFragment explore = new ExploreFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, explore).commit();
+
             navigationView.setCheckedItem(R.id.nav_explore);
         }
     }
@@ -69,30 +80,72 @@ public class ExploreActivity extends AppCompatActivity implements NavigationView
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+            switch (messages.indexOf(toolbar.getTitle())) {
+                case 0: //explore
+                    System.out.println("case 0 reached");
+                    invalidateOptionsMenu();
+                    menu.findItem(R.id.nav_submitProj).setVisible(false);
+                    menu.findItem(R.id.nav_addProj).setVisible(true);
+                    break;
+                case 1: //logout
+                    break;
+                case 2: //profile
+                    System.out.println("case 1 reached");
+                    invalidateOptionsMenu();
+                    menu.findItem(R.id.nav_addProj).setVisible(false);
+                    menu.findItem(R.id.nav_submitProj).setVisible(false);
+                    break;
+                case 3: //projects
+                    invalidateOptionsMenu();
+                    menu.findItem(R.id.nav_addProj).setVisible(false);
+                    menu.findItem(R.id.nav_submitProj).setVisible(false);
+                    break;
+                case 4: //new project
+                    invalidateOptionsMenu();
+                    menu.findItem(R.id.nav_addProj).setVisible(false);
+                    menu.findItem(R.id.nav_submitProj).setVisible(true);
+                    break;
+            }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.nav_explore:
                 toolbar.setTitle("Explore");
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new ExploreFragment()).commit();
+                invalidateOptionsMenu();
+                ExploreFragment explore = new ExploreFragment();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, explore);
+                transaction.addToBackStack(null);
+                transaction.commit();
+
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new ExploreFragment()).commit();
                 break;
             case R.id.nav_logout:
                 toolbar.setTitle("Logout");
+                invalidateOptionsMenu();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new LogoutFragment()).commit();
                 break;
             case R.id.nav_profile:
                 toolbar.setTitle("Profile");
+                invalidateOptionsMenu();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new ProfileFragment()).commit();
                 break;
             case R.id.nav_projects:
                 toolbar.setTitle("Projects");
+                invalidateOptionsMenu();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new ProjectsFragment()).commit();
                 break;
             case R.id.nav_addProj:
                 toolbar.setTitle("New Project");
+                invalidateOptionsMenu();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new AddProjFragment()).commit();
                 break;
