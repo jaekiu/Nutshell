@@ -17,18 +17,31 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
 
 public class FirebaseUtils {
+    /** Retrieves the Firebase Storage.
+     * @return: FirebaseStorage object. */
+    public static FirebaseStorage getFirebaseStorage() {
+        return FirebaseStorage.getInstance();
+    }
+
     /** Retrieves the Firebase Database.
      * @return: FirebaseDatabase object. */
     public static FirebaseDatabase getFirebaseDatabase() {
         return FirebaseDatabase.getInstance();
     }
 
-    /** Returns a Firebase Database Reference to the SOCIALS path.
+    /** Returns a Firebase Database Reference to the USERS path.
      * @return: DatabaseReference object. */
     public static DatabaseReference getUsersDatabaseRef() {
         return FirebaseDatabase.getInstance().getReference("users");
+    }
+
+    /** Returns a Firebase Database Reference to the PROJECTS path.
+     * @return: DatabaseReference object. */
+    public static DatabaseReference getProjsDatabaseRef() {
+        return FirebaseDatabase.getInstance().getReference("projects");
     }
 
     /** Retrieves the Firebase User for Authentication purposes.

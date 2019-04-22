@@ -1,16 +1,13 @@
 package com.jackie.nutshell;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SearchView;
 import android.view.View;
@@ -18,7 +15,12 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -30,9 +32,11 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
     private Button skip;
     private ImageButton linkedIn;
     private ImageButton github;
-    private Uri eventImg;
+    private Uri profileImg;
     private String linkedInLink = "";
     private String githubLink = "";
+    private FirebaseStorage storage;
+    private DatabaseReference db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,8 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
         skip = findViewById(R.id.skipBtn);
         linkedIn = findViewById(R.id.linkedinBtn);
         github = findViewById(R.id.githubBtn);
+        storage = FirebaseUtils.getFirebaseStorage();
+        db = FirebaseUtils.getUsersDatabaseRef();
 
         uploadImage.setOnClickListener(this);
         skip.setOnClickListener(this);
@@ -104,10 +110,10 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
         super.onActivityResult(requestCode, resultCode, data);
         //Detects request codes
         if(requestCode == 1 && resultCode == RESULT_OK) {
-            eventImg = data.getData();
+            profileImg = data.getData();
             Bitmap bitmap = null;
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), eventImg);
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), profileImg);
                 Glide.with(this).load(bitmap).centerCrop().into(uploadImage);
                 uploadImage.setBackgroundTintList((getResources().getColorStateList(android.R.color.transparent)));
 
@@ -140,6 +146,25 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
             case R.id.githubBtn:
                 createDialog("Github");
                 break;
+            case R.id.submitBtn:
+                final String imgKey = FirebaseUtils.getFirebaseUser().getUid();
+                // Create a storage reference from our app
+                StorageReference storageRef = storage.getReference();
+                // Create a reference to "GUID.jpg"
+                StorageReference imgRef = storageRef.child(imgKey + ".jpg");
+                imgRef.putFile(profileImg).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        db.child(imgKey).setValue(0);
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(), "Please upload a valid image!", Toast.LENGTH_LONG).show();
+                    }
+                });
+
         }
     }
 }
