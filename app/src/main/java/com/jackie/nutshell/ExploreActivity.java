@@ -49,6 +49,8 @@ public class ExploreActivity extends AppCompatActivity implements NavigationView
 
 
         if (savedInstanceState == null) {
+            toolbar.setTitle("Explore");
+            invalidateOptionsMenu();
             ExploreFragment explore = new ExploreFragment();
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, explore).commit();
@@ -73,6 +75,11 @@ public class ExploreActivity extends AppCompatActivity implements NavigationView
                 toolbar.setTitle("New Project");
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new AddProjFragment()).commit();
+                return true;
+            case R.id.nav_submitProj:
+                toolbar.setTitle("Expore");
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new ExploreFragment()).commit();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -148,6 +155,12 @@ public class ExploreActivity extends AppCompatActivity implements NavigationView
                 invalidateOptionsMenu();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new AddProjFragment()).commit();
+                break;
+            case R.id.nav_submitProj:
+                toolbar.setTitle("Explore");
+                invalidateOptionsMenu();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new ExploreFragment()).commit();
                 break;
 
         }
