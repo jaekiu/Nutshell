@@ -8,5 +8,11 @@
     <color name="colorBrownDark">#492a0f</color>
     <color name="colorLightGrey">#f0ebe8</color>
     <color name="colorAcornYellow">#ffc920</color>
+    <color name="colorLinkedIn">#0077B5</color>
+    <color name="colorSkill1">#ff647c</color>
+    <color name="colorSkill2">#66B5F8</color>
+    <color name="colorSkill3">#ffcf5c</color>
+    <color name="colorSkill4">#6979F8</color>
+    <color name="colorSkill5">#00C48C</color>
 
 </resources>
