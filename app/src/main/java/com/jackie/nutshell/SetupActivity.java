@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -56,7 +55,7 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
     private String linkedInLink = "";
     private String githubLink = "";
     private FirebaseStorage storage;
-    private DatabaseReference db;
+    private DatabaseReference usersDb;
     private SkillsAdapter skillsAdapter;
     private ArrayList<String> skills = new ArrayList<>(5);
 
@@ -78,7 +77,7 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
         submit = findViewById(R.id.submitBtn);
         mSearchView = findViewById(R.id.floating_search_view);
         storage = FirebaseUtils.getFirebaseStorage();
-        db = FirebaseUtils.getUsersDatabaseRef();
+        usersDb = FirebaseUtils.getUsersDatabaseRef();
 
         // Setting buttons
         uploadImage.setOnClickListener(this);
@@ -91,7 +90,6 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
         Glide.with(this).load(R.drawable.default_profile_pic).fitCenter().into(uploadImage);
 
         // Handling GridView for skills
-        // populateDummySkills();
         GridView gridView = findViewById(R.id.skillGridView);
         skillsAdapter = new SkillsAdapter(this, skills);
         gridView.setAdapter(skillsAdapter);
@@ -117,9 +115,8 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void onFocusCleared() {
-                final float scale = getResources().getDisplayMetrics().density;
-                int pixelsH = (int) (408 * scale + 0.5f);
-                int pixelsR = (int) (28 * scale + 0.5f);
+                int pixelsH = Utils.dpToPx(408, getResources());
+                int pixelsR = Utils.dpToPx(28, getResources());
                 ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) mSearchView.getLayoutParams();
                 p.setMargins(0, 0, pixelsR, 0);
                 mSearchView.getLayoutParams().height= pixelsH;
@@ -193,6 +190,7 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
+    /** Adds skill to skills ArrayList (used for populating GridView). */
     private void addSkill(String skill) {
         if (skills.size() == 5) {
             Toast.makeText(this, "You can only have 5 skills!", Toast.LENGTH_SHORT).show();
@@ -204,15 +202,7 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void populateDummySkills() {
-        skills.add("Python");
-        skills.add("Java");
-        skills.add("HTML");
-        skills.add("CSS");
-        skills.add("Mobile");
-    }
-
-
+    /** Dialogs for uploading LinkedIn and Github links. */
     private void createDialog(final String type) {
         Utils.showSingleInputDialog(this,
                 type + " Link",
@@ -224,9 +214,9 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
                 new SingleInputDialogListener() {
                     @Override
                     public void positiveCallback(String inputText) {
-                        if (type.equals("LinkedIn")) {
+                        if (type.equals("LinkedIn") && inputText.toLowerCase().contains("linkedin.com")) {
                             linkedInLink = inputText;
-                        } else if (type.equals("Github")) {
+                        } else if (type.equals("Github") && inputText.toLowerCase().contains("github.com")) {
                             githubLink = inputText;
                         } else {
                             Toast.makeText(getApplicationContext(), "Invalid link!", Toast.LENGTH_SHORT).show();
@@ -242,6 +232,7 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
                 });
     }
 
+    /** Checks if phone number is in correct format (xxx-xxx-xxxx). */
     private boolean checkValidPhoneNum(String num) {
         return num.matches("\\d{3}-\\d{3}-\\d{4}");
     }
@@ -269,6 +260,7 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -289,13 +281,20 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
                 createDialog("Github");
                 break;
             case R.id.submitBtn:
-                Log.d("debugging", "what am i in");
-                if (!checkValidPhoneNum(phoneNum.getText().toString())) {
+                if (linkedInLink.equals("")) {
+                    Toast.makeText(this, "Please enter a link to your LinkedIn!", Toast.LENGTH_SHORT).show();
+                    break;
+                } else if (githubLink.equals("")) {
+                    Toast.makeText(this, "Please enter a link to your Github!", Toast.LENGTH_SHORT).show();
+                    break;
+                } else if (skills.size() == 0) {
+                    Toast.makeText(this, "Please include at least one skill!", Toast.LENGTH_SHORT).show();
+                    break;
+                } else if (!checkValidPhoneNum(phoneNum.getText().toString())) {
                     Toast.makeText(this, "Please enter your phone number in xxx-xxx-xxxx format!", Toast.LENGTH_SHORT).show();
-                    Log.d("debugging", "hello??");
-
                     break;
                 }
+
                 final String imgKey = FirebaseUtils.getFirebaseUser().getUid();
                 // Create a storage reference from our app
                 StorageReference storageRef = storage.getReference();
@@ -304,8 +303,10 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
                 imgRef.putFile(profileImg).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        db.child(imgKey).setValue(0);
-
+                        usersDb.child(imgKey).child("linkedIn").setValue(linkedInLink);
+                        usersDb.child(imgKey).child("github").setValue(githubLink);
+                        usersDb.child(imgKey).child("skills").setValue(skills);
+                        usersDb.child(imgKey).child("phone").setValue(phoneNum.getText().toString());
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -313,6 +314,7 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
                         Toast.makeText(getApplicationContext(), "Please upload a valid image!", Toast.LENGTH_LONG).show();
                     }
                 });
+
 
         }
     }
