@@ -109,8 +109,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     /** Switches to ExploreActivity.class. */
     public void updateUI() {
-        // Intent i = new Intent(this, ExploreActivity.class);
-        Intent i = new Intent(this, SetupActivity.class);
+        Intent i = new Intent(this, ExploreActivity.class);
         startActivity(i);
     }
 

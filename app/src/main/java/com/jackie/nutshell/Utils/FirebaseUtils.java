@@ -26,16 +26,16 @@ public class FirebaseUtils {
         return FirebaseStorage.getInstance();
     }
 
-    /** Retrieves the Firebase Database.
-     * @return: FirebaseDatabase object. */
-    public static FirebaseDatabase getFirebaseDatabase() {
-        return FirebaseDatabase.getInstance();
-    }
-
     /** Returns a Firebase Database Reference to the USERS path.
      * @return: DatabaseReference object. */
     public static DatabaseReference getUsersDatabaseRef() {
         return FirebaseDatabase.getInstance().getReference("users");
+    }
+
+    /** Returns a Firebase Database Reference to the USERNAMES path.
+     * @return: DatabaseReference object. */
+    public static DatabaseReference getUsernamesDatabaseRef() {
+        return FirebaseDatabase.getInstance().getReference("usernames");
     }
 
     /** Returns a Firebase Database Reference to the PROJECTS path.

@@ -307,6 +307,9 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
                         usersDb.child(imgKey).child("github").setValue(githubLink);
                         usersDb.child(imgKey).child("skills").setValue(skills);
                         usersDb.child(imgKey).child("phone").setValue(phoneNum.getText().toString());
+                        Intent i = new Intent(SetupActivity.this, ExploreActivity.class);
+                        startActivity(i);
+
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
