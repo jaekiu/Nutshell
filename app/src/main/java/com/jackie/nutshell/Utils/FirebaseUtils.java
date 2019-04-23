@@ -2,7 +2,7 @@
  * @author: Jacqueline Zhang
  * @date: 03/05/2019
  */
-package com.jackie.nutshell;
+package com.jackie.nutshell.Utils;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

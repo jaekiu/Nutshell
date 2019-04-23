@@ -1,4 +1,4 @@
-package com.jackie.nutshell;
+package com.jackie.nutshell.Utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -6,12 +6,13 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
+import com.jackie.nutshell.SingleInputDialogListener;
 
 public class Utils {
     /**

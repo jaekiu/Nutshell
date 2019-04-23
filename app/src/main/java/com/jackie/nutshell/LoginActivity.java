@@ -20,7 +20,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import static com.jackie.nutshell.FirebaseUtils.getFirebaseAuth;
+import static com.jackie.nutshell.Utils.FirebaseUtils.getFirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 

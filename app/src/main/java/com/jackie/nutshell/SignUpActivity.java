@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.jackie.nutshell.Utils.FirebaseUtils;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 

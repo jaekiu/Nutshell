@@ -14,12 +14,12 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.SearchView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
+import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,15 +29,20 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.jackie.nutshell.Searching.DataHelper;
 import com.jackie.nutshell.Searching.SkillSuggestion;
+import com.jackie.nutshell.Utils.FirebaseUtils;
+import com.jackie.nutshell.Utils.Utils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/** @author jackie
+ * Created on 4/6/19.
+ * Represents the SetupActivity Screen. */
+
 public class SetupActivity extends AppCompatActivity implements View.OnClickListener {
 
-    // private SearchView searchView;
     public static final long FIND_SUGGESTION_SIMULATED_DELAY = 250;
 
     private FloatingSearchView mSearchView;
@@ -52,6 +57,7 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
     private String githubLink = "";
     private FirebaseStorage storage;
     private DatabaseReference db;
+    private SkillsAdapter skillsAdapter;
     private ArrayList<String> skills = new ArrayList<>(5);
 
     @Override
@@ -61,6 +67,7 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
 
         // Prevents keyboard from popping up when activity launches.
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
 
         // Initializing variables
         uploadImage = findViewById(R.id.uploadImgBtn);
@@ -84,19 +91,26 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
         Glide.with(this).load(R.drawable.default_profile_pic).fitCenter().into(uploadImage);
 
         // Handling GridView for skills
-        populateDummySkills();
+        // populateDummySkills();
         GridView gridView = findViewById(R.id.skillGridView);
-        SkillsAdapter skillsAdapter = new SkillsAdapter(this, skills);
+        skillsAdapter = new SkillsAdapter(this, skills);
         gridView.setAdapter(skillsAdapter);
 
         // Handling searching
+        setupSearch();
+    }
+
+    /** Sets up searching. */
+    private void setupSearch() {
+        mSearchView.setShowSearchKey(true);
+        mSearchView.setCloseSearchOnKeyboardDismiss(true);
+
         mSearchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
             @Override
             public void onFocus() {
                 ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) mSearchView.getLayoutParams();
                 p.setMargins(0, 0, 0, 0);
                 mSearchView.requestLayout();
-
                 mSearchView.getLayoutParams().height= ViewGroup.LayoutParams.MATCH_PARENT;
                 mSearchView.getLayoutParams().width= ViewGroup.LayoutParams.MATCH_PARENT;
             }
@@ -145,27 +159,49 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
                                 }
                             });
                 }
-                //pass them on to the search view
-                //mSearchView.swapSuggestions(newSuggestions);
             }
         });
 
-        // searchView = findViewById(R.id.searchView);
-//        searchView.setQueryHint("Search for skills!");
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                Toast.makeText(getBaseContext(), query, Toast.LENGTH_LONG).show();
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                Toast.makeText(getBaseContext(), newText, Toast.LENGTH_LONG).show();
-//                return false;
-//            }
-//        });
+        mSearchView.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
+            @Override
+            public void onSuggestionClicked(final SearchSuggestion searchSuggestion) {
+                String lastQuery = searchSuggestion.getBody();
+                mSearchView.setSearchText(lastQuery);
+            }
+
+            @Override
+            public void onSearchAction(String currentQuery) {
+                String query = "";
+                switch (currentQuery) {
+                    case "Machine Learning":
+                        query = "ML";
+                        break;
+                    case "Artificial Intelligence":
+                        query = "AI";
+                        break;
+                    case "Graphic Design":
+                        query = "Graphic Design";
+                        break;
+                    default:
+                        query = currentQuery;
+                }
+                if (query.length() > 8 && !query.toLowerCase().equals("javascript")) {
+                    query = query.substring(0, 6) + "...";
+                }
+                addSkill(query);
+            }
+        });
+    }
+
+    private void addSkill(String skill) {
+        if (skills.size() == 5) {
+            Toast.makeText(this, "You can only have 5 skills!", Toast.LENGTH_SHORT).show();
+        } else if (skills.contains(skill)) {
+            Toast.makeText(this, "Skill already exists!", Toast.LENGTH_SHORT).show();
+        } else {
+            skills.add(skill);
+            skillsAdapter.notifyDataSetChanged();
+        }
     }
 
     private void populateDummySkills() {
