@@ -1,6 +1,7 @@
 package com.jackie.nutshell;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,14 +29,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.jackie.nutshell.Utils.FirebaseUtils;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 
     /** Represents Firebase Auth object. */
     private FirebaseAuth mAuth;
-    private FirebaseDatabase _database;
     private DatabaseReference _myRef;
+    private FirebaseStorage storage;
 
     /** Layout-related variables. */
     private Button signUp;
@@ -55,7 +61,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         // Initiate content.
         mAuth = FirebaseUtils.getFirebaseAuth();
-        _database = FirebaseUtils.getFirebaseDatabase();
+        storage = FirebaseUtils.getFirebaseStorage();
         _myRef = FirebaseUtils.getUsersDatabaseRef();
         back = findViewById(R.id.backButtonSUA);
         usernameText = findViewById(R.id.usernameText);
@@ -126,8 +132,27 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void addUser(String username, String email, String name) {
-        _myRef.child(username).child("email").setValue(email);
-        _myRef.child(username).child("name").setValue(name);
+        final String key = mAuth.getCurrentUser().getUid();
+        _myRef.child(key).child("username").setValue(username);
+        _myRef.child(key).child("email").setValue(email);
+        _myRef.child(key).child("name").setValue(name);
+        Uri profileImg = Uri.parse(getResources().getDrawable(R.drawable.nut).toString()); // default profile pic
+
+        // Create a storage reference from our app
+        StorageReference storageRef = storage.getReference();
+        // Create a reference to "GUID.jpg"
+        StorageReference imgRef = storageRef.child(key + ".jpg");
+        imgRef.putFile(profileImg).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(), "Please upload a valid image!", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /** Switches to SetupActivity.class if sign-up is successful. */
