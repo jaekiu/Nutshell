@@ -1,6 +1,7 @@
 package com.jackie.nutshell;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +17,10 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseError;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,15 +28,19 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.jackie.nutshell.Utils.FirebaseUtils;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 
     /** Represents Firebase Auth object. */
     private FirebaseAuth mAuth;
-    private FirebaseDatabase _database;
-    private DatabaseReference _myRef;
+    private DatabaseReference usersRef;
+    private DatabaseReference usernamesRef;
+    private FirebaseStorage storage;
 
     /** Layout-related variables. */
     private Button signUp;
@@ -54,8 +62,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         // Initiate content.
         mAuth = FirebaseUtils.getFirebaseAuth();
-        _database = FirebaseUtils.getFirebaseDatabase();
-        _myRef = FirebaseUtils.getUsersDatabaseRef();
+        storage = FirebaseUtils.getFirebaseStorage();
+        usersRef = FirebaseUtils.getUsersDatabaseRef();
+        usernamesRef = FirebaseUtils.getUsernamesDatabaseRef();
         back = findViewById(R.id.backButtonSUA);
         usernameText = findViewById(R.id.usernameText);
         nameText = findViewById(R.id.nameText);
@@ -85,6 +94,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             Toast.makeText(this, "Please make your password at least 6 characters long!", Toast.LENGTH_LONG).show();
         } else if (!password.equals(confirmPass)) {
             Toast.makeText(this, "Passwords do not match!", Toast.LENGTH_LONG).show();
+        } else if (checkIfUsernameExists(username)) {
+            Toast.makeText(this, "Username already exists!", Toast.LENGTH_LONG).show();
         } else {
             // If everything is fine, then create a user with his/her email and password.
             // Could put this in onDataChange maybe??
@@ -125,8 +136,28 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void addUser(String username, String email, String name) {
-        _myRef.child(username).child("email").setValue(email);
-        _myRef.child(username).child("name").setValue(name);
+        final String key = mAuth.getCurrentUser().getUid();
+        usersRef.child(key).child("username").setValue(username);
+        usersRef.child(key).child("email").setValue(email);
+        usersRef.child(key).child("name").setValue(name);
+        usernamesRef.child(username).setValue(true);
+        Uri profileImg = Uri.parse(getResources().getDrawable(R.drawable.nut).toString()); // default profile pic
+
+        // Create a storage reference from our app
+        StorageReference storageRef = storage.getReference();
+        // Create a reference to "GUID.jpg"
+        StorageReference imgRef = storageRef.child(key + ".jpg");
+        imgRef.putFile(profileImg).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(), "Please upload a valid image!", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /** Switches to SetupActivity.class if sign-up is successful. */
@@ -135,27 +166,24 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         startActivity(i);
     }
 
-    // DOES NOT WORK AS INTENDED
-    public boolean checkUsername(final String username) {
-        // Checks to see if username already exists.
-        // Could possibly change this so when they're typing their username, it tells them whether the username exists or not.
-        // If it does, it alerts the user and does not let the user proceed.
-        final boolean[] exists = {false};
-        _myRef.addValueEventListener(new ValueEventListener() {
+    public boolean checkIfUsernameExists(final String username) {
+        final boolean[] flag = {false};
+        usernamesRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChild(username)){
-                    // Toast.makeText(SignUpActivity.this, "Username already exists!", Toast.LENGTH_LONG).show();
-                    exists[0] = true;
-                    return;
+                for(DataSnapshot data: dataSnapshot.getChildren()){
+                    if (data.child(username).exists()) {
+                        flag[0] = true;
+                    }
                 }
             }
+
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
-        return exists[0];
+        return flag[0];
     }
 
     @Override

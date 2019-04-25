@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
     tools:context=".SetupActivity">
 
     <TextView
-        android:id="@+id/helloText"
+        android:id="@+id/helloTextMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="150dp"
-        android:layout_marginTop="39dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="149dp"
         android:fontFamily="@font/montserrat"
         android:text="Hello User!"
@@ -32,9 +33,9 @@
         android:textAlignment="center"
         android:textColor="@color/colorBrownLight"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="@+id/helloText"
-        app:layout_constraintStart_toStartOf="@+id/helloText"
-        app:layout_constraintTop_toBottomOf="@+id/helloText" />
+        app:layout_constraintEnd_toEndOf="@+id/helloTextMenu"
+        app:layout_constraintStart_toStartOf="@+id/helloTextMenu"
+        app:layout_constraintTop_toBottomOf="@+id/helloTextMenu" />
 
     <TextView
         android:id="@+id/textView4"
@@ -51,12 +52,9 @@
 
     <ImageButton
         android:id="@+id/uploadImgBtn"
-        android:layout_width="0dp"
-        android:layout_height="154dp"
-        android:layout_marginEnd="28dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:backgroundTint="@color/colorLightGrey"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textView4"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
         tools:src="@drawable/default_profile_pic" />
@@ -65,8 +63,9 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:fontFamily="@font/montserrat"
-        android:text="2. List your skills."
+        android:text="3. List your skills."
         android:textColor="@color/colorBrownDark"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/uploadImgBtn"
@@ -78,34 +77,32 @@
         android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="49dp"
+        android:layout_marginTop="15dp"
         android:fontFamily="@font/montserrat"
-        android:text="3. Link your social media."
+        android:text="4. Insert your phone number."
         android:textColor="@color/colorBrownDark"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/searchView"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/searchView"
-        app:layout_constraintTop_toBottomOf="@+id/searchView" />
+        app:layout_constraintStart_toStartOf="@+id/skillGridView"
+        app:layout_constraintTop_toBottomOf="@+id/skillGridView" />
 
-    <SearchView
-        android:id="@+id/searchView"
-        android:layout_width="0dp"
-        android:layout_height="34dp"
-        android:layout_marginEnd="28dp"
-        android:elevation="2dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textView6"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+    <!--<SearchView-->
+        <!--android:id="@+id/searchView"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="34dp"-->
+        <!--android:layout_marginEnd="28dp"-->
+        <!--android:elevation="2dp"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintHorizontal_bias="0.0"-->
+        <!--app:layout_constraintStart_toStartOf="@+id/textView6"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/textView6" />-->
 
     <Button
         android:id="@+id/skipBtn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_marginStart="156dp"
         android:layout_marginEnd="159dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="25dp"
         android:background="@android:color/transparent"
         android:text="SKIP FOR NOW"
         android:textColor="@color/colorBrownDark"
@@ -117,21 +114,23 @@
         android:id="@+id/linkedinBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="11dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="30dp"
         android:background="@android:color/transparent"
-        app:layout_constraintStart_toStartOf="@+id/textView7"
-        app:layout_constraintTop_toBottomOf="@+id/textView7"
+        android:tint="@color/colorLinkedIn"
+        app:layout_constraintStart_toStartOf="@+id/textView5"
+        app:layout_constraintTop_toBottomOf="@+id/textView5"
         app:srcCompat="@drawable/linkedin" />
 
     <ImageButton
         android:id="@+id/githubBtn"
-        android:layout_width="54dp"
-        android:layout_height="54dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="15dp"
         android:background="@android:color/transparent"
-        app:layout_constraintStart_toEndOf="@+id/linkedinBtn"
-        app:layout_constraintTop_toBottomOf="@+id/textView7"
+        app:layout_constraintEnd_toEndOf="@+id/textView5"
+        app:layout_constraintTop_toBottomOf="@+id/textView5"
         app:srcCompat="@drawable/github" />
 
     <Button
@@ -140,12 +139,67 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="131dp"
         android:layout_marginEnd="131dp"
-        android:backgroundTint="@color/colorPrimary"
+        android:backgroundTint="@color/colorAcornYellow"
         android:text="Submit"
-        android:textColor="@color/colorBrownDark"
+        android:textColor="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/skipBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="153dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="28dp"
+        android:fontFamily="@font/montserrat"
+        android:lines="2"
+        android:text="2. Link your social media."
+        android:textAlignment="viewStart"
+        android:textColor="@color/colorBrownDark"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <EditText
+        android:id="@+id/phoneNumText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginEnd="28dp"
+        android:ems="10"
+        android:hint="xxx-xxx-xxxx"
+        android:inputType="phone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+    <GridView
+        android:id="@+id/skillGridView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="28dp"
+        android:verticalSpacing="7dp"
+        android:horizontalSpacing="7dp"
+        android:numColumns="3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView6"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+    <com.arlib.floatingsearchview.FloatingSearchView
+        android:id="@+id/floating_search_view"
+        android:layout_width="0dp"
+        android:layout_height="408dp"
+        android:layout_marginEnd="28dp"
+        app:floatingSearch_close_search_on_keyboard_dismiss="true"
+        app:floatingSearch_leftActionMode="showSearch"
+        app:floatingSearch_searchHint="Search..."
+        app:floatingSearch_showSearchKey="false"
+        app:floatingSearch_suggestionsListAnimDuration="250"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textView6"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
 </android.support.constraint.ConstraintLayout>

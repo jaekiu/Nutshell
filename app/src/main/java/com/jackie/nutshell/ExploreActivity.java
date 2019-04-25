@@ -5,6 +5,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -12,8 +13,26 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.StorageReference;
+import com.jackie.nutshell.Utils.FirebaseUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +40,11 @@ import java.util.List;
 public class ExploreActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
+    private FirebaseUser user;
+    private String usersName = "";
+    private DatabaseReference usersDb;
+    private TextView helloMenuText;
+    private ImageView profilePicMenu;
     private Toolbar toolbar;
     private List<String> messages = Arrays.asList("Explore", "Logout", "Profile", "Projects", "New Project");
 
@@ -29,6 +53,15 @@ public class ExploreActivity extends AppCompatActivity implements NavigationView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore);
+
+        // Change color of status bar
+        Window window = getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+
+        user = FirebaseUtils.getFirebaseUser();
+        usersDb = FirebaseUtils.getUsersDatabaseRef();
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -40,6 +73,13 @@ public class ExploreActivity extends AppCompatActivity implements NavigationView
         drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View header=navigationView.getHeaderView(0);
+
+        // View vi = getLayoutInflater().inflate(R.layout.nav_header, null);
+        helloMenuText = header.findViewById(R.id.helloTextMenu);
+        profilePicMenu = header.findViewById(R.id.profilePicMenu);
+        setUserInfoInMenu();
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -57,6 +97,27 @@ public class ExploreActivity extends AppCompatActivity implements NavigationView
 
             navigationView.setCheckedItem(R.id.nav_explore);
         }
+    }
+
+    private void setUserInfoInMenu() {
+        String uid = user.getUid();
+        DatabaseReference userSpecificDb = usersDb.child(uid).child("name");
+        userSpecificDb.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                usersName = dataSnapshot.getValue(String.class);
+                helloMenuText.setText("Hello " + usersName + "!");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        StorageReference storageRef = FirebaseUtils.getFirebaseStorage().getReference();
+        StorageReference imgRef = storageRef.child(user.getUid() + ".jpg");
+        // Handling images
+        Glide.with(this).load(imgRef).centerCrop().into(profilePicMenu);
     }
 
     /** Creates all the menu options for the toolbar (the add button). */
@@ -77,7 +138,7 @@ public class ExploreActivity extends AppCompatActivity implements NavigationView
                         new AddProjFragment()).commit();
                 return true;
             case R.id.nav_submitProj:
-                toolbar.setTitle("Expore");
+                toolbar.setTitle("Explore");
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new ExploreFragment()).commit();
                 return true;
@@ -135,9 +196,14 @@ public class ExploreActivity extends AppCompatActivity implements NavigationView
             case R.id.nav_logout:
                 toolbar.setTitle("Logout");
                 invalidateOptionsMenu();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new LogoutFragment()).commit();
+                Intent i2 = new Intent(this, LoginActivity.class);
+                FirebaseAuth.getInstance().signOut();
+                Toast.makeText(this, "You are now signed out.", Toast.LENGTH_SHORT).show();
+                startActivity(i2);
                 break;
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new LogoutFragment()).commit();
+//                break;
             case R.id.nav_profile:
                 toolbar.setTitle("Profile");
                 invalidateOptionsMenu();
