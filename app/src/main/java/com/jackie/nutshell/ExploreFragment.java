@@ -18,14 +18,26 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.jackie.nutshell.Utils.FirebaseUtils;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 public class ExploreFragment extends Fragment {
     //public class ExploreFragment extends Fragment implements View.OnClickListener {
     private RecyclerView mRecyclerView;
+    private DatabaseReference usersDBRef;
+    private DatabaseReference projsDBRef;
+    private ArrayList<Proj> projects;
 
 
     public ExploreFragment() { }
@@ -37,6 +49,49 @@ public class ExploreFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_explore, container, false);
+
+
+        usersDBRef = FirebaseUtils.getUsersDatabaseRef();
+        projsDBRef = FirebaseUtils.getProjsDatabaseRef();
+
+        // Attach a listener to read the data at our posts reference
+        projsDBRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snap: dataSnapshot.getChildren()) {
+
+                }
+                Proj proj = dataSnapshot.getValue(Proj.class);
+                System.out.println(proj);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+
+        projsDBRef.orderByKey().addChildEventListener(new ChildEventListener() {
+                                             @Override
+                                             public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
+                                                 Proj newPost = dataSnapshot.getValue(Proj.class);
+                                             }
+                                             @Override
+                                             public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {
+                                             }
+                                             @Override
+                                             public void onChildRemoved(DataSnapshot dataSnapshot) {
+                                                 Proj removedPost = dataSnapshot.getValue(Proj.class);
+                                             }
+                                             @Override
+                                             public void onChildMoved(DataSnapshot dataSnapshot, String prevChildKey) {
+                                             }
+
+                                             @Override
+                                             public void onCancelled(DatabaseError databaseError) {
+                                             }
+        });
+
 
         List<String> list = new ArrayList<>();
         list.add("Black Pearl");

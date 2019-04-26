@@ -57,6 +57,8 @@ public class AddProjFragment extends Fragment {
         projsDBRef.child(key).child("name").setValue(name);
         projsDBRef.child(key).child("description").setValue(desc);
         projsDBRef.child(key).child("skills").setValue(skills);
+
+
     }
 
 }
