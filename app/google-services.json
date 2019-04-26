@@ -13,7 +13,12 @@
           "package_name": "com.jackie.nutshell"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "679853291676-p0ckd8112mernuugt655bcunjll6shmv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyB1JeNVRqbFIIvdZf2KsNtzHAxy4c1iX8o"

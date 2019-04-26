@@ -1,5 +1,7 @@
 package com.jackie.nutshell;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -84,7 +86,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
      * @param email: represents user's email that he/she inputs.
      * @param name: represents user's name that he/she inputs.
      * @param password: represents user's password that he/she inputs. */
-    public void signUpUsers(final String username, final String email, String password, String confirmPass, final String name) {
+    public void signUpUsers(final String username, final String email, final String password, String confirmPass, final String name) {
         if (username == null || email == null || password == null || confirmPass == null || name == null) {
             Toast.makeText(this, "Please enter your name, email, and password!", Toast.LENGTH_LONG).show();
         } else if (TextUtils.isEmpty(username) || TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPass) || TextUtils.isEmpty(name)) {
@@ -94,43 +96,58 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             Toast.makeText(this, "Please make your password at least 6 characters long!", Toast.LENGTH_LONG).show();
         } else if (!password.equals(confirmPass)) {
             Toast.makeText(this, "Passwords do not match!", Toast.LENGTH_LONG).show();
-        } else if (checkIfUsernameExists(username)) {
-            Toast.makeText(this, "Username already exists!", Toast.LENGTH_LONG).show();
         } else {
             // If everything is fine, then create a user with his/her email and password.
             // Could put this in onDataChange maybe??
-            mAuth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Log.d("FirebaseDebugging", "createUserWithEmail:success");
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                        .setDisplayName(name)
-                                        .build();
+            usernamesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    if (snapshot.hasChild(username)) {
+                        // run some code
+                        Log.d("nani", "username alr exists");
+                        Toast.makeText(getApplicationContext(), "Username already exists!", Toast.LENGTH_LONG).show();
+                    } else {
+                        mAuth.createUserWithEmailAndPassword(email, password)
+                                .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if (task.isSuccessful()) {
+                                            // Sign in success, update UI with the signed-in user's information
+                                            Log.d("FirebaseDebugging", "createUserWithEmail:success");
+                                            FirebaseUser user = mAuth.getCurrentUser();
+                                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                                    .setDisplayName(name)
+                                                    .build();
 
-                                user.updateProfile(profileUpdates)
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    Log.d("FirebaseDebugging", "User profile updated.");
-                                                }
-                                            }
-                                        });
-                                addUser(username, email, name);
-                                updateUI();
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Log.w("FirebaseDebugging", "createUserWithEmail:failure", task.getException());
-                                Toast.makeText(SignUpActivity.this, "Authentication failed.",
-                                        Toast.LENGTH_SHORT).show();
-                            }
+                                            user.updateProfile(profileUpdates)
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()) {
+                                                                Log.d("FirebaseDebugging", "User profile updated.");
+                                                            }
+                                                        }
+                                                    });
+                                            addUser(username, email, name);
+                                            updateUI();
+                                        } else {
+                                            // If sign in fails, display a message to the user.
+                                            Log.w("FirebaseDebugging", "createUserWithEmail:failure", task.getException());
+                                            Toast.makeText(SignUpActivity.this, "Authentication failed.",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
 
-                        }
-                    });
+                                    }
+                                });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
         }
 
     }
@@ -140,22 +157,22 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         usersRef.child(key).child("username").setValue(username);
         usersRef.child(key).child("email").setValue(email);
         usersRef.child(key).child("name").setValue(name);
-        usernamesRef.child(username).setValue(true);
-        Uri profileImg = Uri.parse(getResources().getDrawable(R.drawable.nut).toString()); // default profile pic
+        usernamesRef.child(username).child("name").setValue(name);
+        Uri profileImg = Uri.parse("android.resource://" + BuildConfig.APPLICATION_ID + "/drawable/default_profile_pic"); // default profile pic
 
         // Create a storage reference from our app
         StorageReference storageRef = storage.getReference();
         // Create a reference to "GUID.jpg"
-        StorageReference imgRef = storageRef.child(key + ".jpg");
+        StorageReference imgRef = storageRef.child("users").child(key + ".jpg");
         imgRef.putFile(profileImg).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
+                Log.d("nani", "i succeeded");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(), "Please upload a valid image!", Toast.LENGTH_LONG).show();
+                Log.d("nani", "i failed");
             }
         });
     }
@@ -167,14 +184,15 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     public boolean checkIfUsernameExists(final String username) {
+        Log.d("nani", "please fucking work");
         final boolean[] flag = {false};
         usernamesRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot data: dataSnapshot.getChildren()){
-                    if (data.child(username).exists()) {
-                        flag[0] = true;
-                    }
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.hasChild(username)) {
+                    // run some code
+                    Log.d("nani", "does this even work");
+                    flag[0] = true;
                 }
             }
 
@@ -183,6 +201,21 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
             }
         });
+//        usernamesRef.child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                for(DataSnapshot data: dataSnapshot.getChildren()){
+//                    if (data.exists()) {
+//                        flag[0] = true;
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
         return flag[0];
     }
 

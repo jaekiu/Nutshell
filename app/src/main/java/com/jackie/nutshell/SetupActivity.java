@@ -299,7 +299,7 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
                 // Create a storage reference from our app
                 StorageReference storageRef = storage.getReference();
                 // Create a reference to "GUID.jpg"
-                StorageReference imgRef = storageRef.child(imgKey + ".jpg");
+                StorageReference imgRef = storageRef.child("users").child(imgKey + ".jpg");
                 imgRef.putFile(profileImg).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
