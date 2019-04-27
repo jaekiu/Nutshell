@@ -139,6 +139,8 @@ public class ExploreActivity extends AppCompatActivity implements NavigationView
                 return true;
             case R.id.nav_submitProj:
                 toolbar.setTitle("Explore");
+
+
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new ExploreFragment()).commit();
                 return true;

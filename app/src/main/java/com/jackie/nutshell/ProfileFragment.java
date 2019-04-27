@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,13 @@ public class ProfileFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d("nani", "hello pls work");
+        Bundle bundle = this.getArguments();
+        int myInt = 0;
+        if (bundle != null) {
+            myInt = bundle.getInt("posterId", 0);
+        }
+        Log.d("nani", "posterID: " + myInt);
         View rootview = inflater.inflate(R.layout.fragment_profile, container, false);
         _about = rootview.findViewById(R.id.about);
         _about.setOnClickListener(new View.OnClickListener() {
