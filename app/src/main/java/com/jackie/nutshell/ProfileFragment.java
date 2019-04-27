@@ -88,9 +88,9 @@ public class ProfileFragment extends Fragment {
     void getUserInfo() {
         // Realtime database retrieval.
         ValueEventListener postListener = new ValueEventListener() {
-            HashMap<String, Object> attributes = new HashMap<>();
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                HashMap<String, Object> attributes = new HashMap<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String key = snapshot.getKey();
                     if (key.equals("skills")) {
@@ -101,6 +101,7 @@ public class ProfileFragment extends Fragment {
                         attributes.put(key, value);
                     }
                 }
+
             }
 
             @Override
