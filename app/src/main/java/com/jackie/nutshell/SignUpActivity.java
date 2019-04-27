@@ -157,13 +157,14 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         usersRef.child(key).child("username").setValue(username);
         usersRef.child(key).child("email").setValue(email);
         usersRef.child(key).child("name").setValue(name);
+        usersRef.child(key).child("karma").setValue(0);
         usernamesRef.child(username).child("name").setValue(name);
         Uri profileImg = Uri.parse("android.resource://" + BuildConfig.APPLICATION_ID + "/drawable/default_profile_pic"); // default profile pic
 
         // Create a storage reference from our app
         StorageReference storageRef = storage.getReference();
         // Create a reference to "GUID.jpg"
-        StorageReference imgRef = storageRef.child("users").child(key + ".jpg");
+        StorageReference imgRef = storageRef.child("users").child(key + ".jpeg");
         imgRef.putFile(profileImg).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

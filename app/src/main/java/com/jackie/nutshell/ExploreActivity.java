@@ -115,7 +115,7 @@ public class ExploreActivity extends AppCompatActivity implements NavigationView
         });
 
         StorageReference storageRef = FirebaseUtils.getFirebaseStorage().getReference();
-        StorageReference imgRef = storageRef.child("users").child(user.getUid() + ".jpg");
+        StorageReference imgRef = storageRef.child("users").child(user.getUid() + ".jpeg");
         // Handling images
         Glide.with(this).load(imgRef).centerCrop().into(profilePicMenu);
     }
