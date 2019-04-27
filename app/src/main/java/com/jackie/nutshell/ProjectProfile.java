@@ -51,8 +51,8 @@ public class ProjectProfile extends AppCompatActivity {
         // you provide access to all the views for a data item in a view holder
         public class MyViewHolder extends RecyclerView.ViewHolder {
             // each data item is just a string in this case
-            public TextView textView;
-            public MyViewHolder(TextView v) {
+            public View textView;
+            public MyViewHolder(View v) {
                 super(v);
                 textView = v;
             }
@@ -68,7 +68,7 @@ public class ProjectProfile extends AppCompatActivity {
         public MyAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
                                                          int viewType) {
             // create a new view
-            TextView v = (TextView) LayoutInflater.from(parent.getContext())
+            View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.cardview, parent, false);
             MyViewHolder vh = new MyViewHolder(v);
             return vh;
@@ -79,7 +79,7 @@ public class ProjectProfile extends AppCompatActivity {
         public void onBindViewHolder(MyViewHolder holder, int position) {
             // - get element from your dataset at this position
             // - replace the contents of the view with that element
-            holder.textView.setText(list[position]);
+            // holder.textView.setText(list[position]);
 
         }
 

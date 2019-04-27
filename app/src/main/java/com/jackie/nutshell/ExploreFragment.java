@@ -60,6 +60,7 @@ public class ExploreFragment extends Fragment {
         projsDBRef = FirebaseUtils.getProjsDatabaseRef();
         projects = new ArrayList<>();
 
+
         mRecyclerView = v.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new RecyclerViewAdapter(projects, getContext());
@@ -177,6 +178,14 @@ public class ExploreFragment extends Fragment {
                 mProfile = itemView.findViewById(R.id.profilePic);
                 viewbutton = itemView.findViewById(R.id.viewbtn);
                 mApply = itemView.findViewById(R.id.applybtn);
+                mProfile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        ((ExploreActivity)context).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                                new ProfileFragment()).commit();
+                    }
+                });
                 viewbutton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
