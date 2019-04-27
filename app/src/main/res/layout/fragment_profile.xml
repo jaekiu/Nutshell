@@ -13,33 +13,25 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:fontFamily="@font/montserrat"
         android:text="Name"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pic" />
-
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="35dp"
-        android:layout_height="19dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:inputType="number"
-        app:layout_constraintEnd_toStartOf="@+id/karma"
-        app:layout_constraintStart_toEndOf="@+id/karmapic"
-        app:layout_constraintTop_toBottomOf="@+id/name" />
 
     <TextView
         android:id="@+id/karma"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="Karma"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="165dp"
+        android:fontFamily="@font/montserrat"
+        android:text="0 Karma"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.61"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/karmapic"
         app:layout_constraintTop_toBottomOf="@+id/name" />
 
     <TextView
@@ -47,20 +39,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="75dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/montserrat"
         android:text="About"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pic" />
+        app:layout_constraintTop_toBottomOf="@+id/karmapic" />
 
     <TextView
         android:id="@+id/projects"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="75dp"
+        android:fontFamily="@font/montserrat"
         android:text="Projects"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pic" />
+        app:layout_constraintTop_toBottomOf="@+id/karma" />
 
     <ImageView
         android:id="@+id/pic"
@@ -78,18 +72,18 @@
         android:id="@+id/karmapic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="168dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="164dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pic"
+        app:layout_constraintTop_toBottomOf="@+id/name"
         app:srcCompat="@drawable/work" />
 
     <ImageView
         android:id="@+id/skillspic"
         android:layout_width="84dp"
         android:layout_height="90dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="86dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/socialpic"
         app:srcCompat="@drawable/skill" />
@@ -98,7 +92,7 @@
         android:id="@+id/socialpic"
         android:layout_width="84dp"
         android:layout_height="90dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="36dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView"
@@ -119,12 +113,13 @@
         android:id="@+id/social_media_head"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="45dp"
-        android:layout_marginTop="81dp"
+        android:layout_marginStart="44dp"
+        android:fontFamily="@font/montserrat"
         android:text="Social Media"
         android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/socialpic"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toTopOf="@+id/socialpic" />
 
     <Button
         android:id="@+id/linkedin"
@@ -154,12 +149,13 @@
         android:id="@+id/skills_head"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="45dp"
-        android:layout_marginTop="98dp"
+        android:layout_marginStart="44dp"
+        android:fontFamily="@font/montserrat"
         android:text="Skills"
         android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/skillspic"
-        app:layout_constraintTop_toBottomOf="@+id/linkedin" />
+        app:layout_constraintTop_toTopOf="@+id/skillspic" />
 
 
     <!--<co.ceryle.segmentedbutton.SegmentedButtonGroup-->
