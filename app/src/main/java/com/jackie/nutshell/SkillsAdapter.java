@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-/** Skills adapter for SetupActivity */
+/** skills adapter for SetupActivity */
 public class SkillsAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<String> skills;
