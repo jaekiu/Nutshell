@@ -210,8 +210,6 @@ public class ExploreFragment extends Fragment {
                         fragment.setArguments(bundle);
                         ((ExploreActivity)context).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                                 fragment).commit();
-                        Log.d("nani", "hello8");
-
                         break;
                     case R.id.applybtn:
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);

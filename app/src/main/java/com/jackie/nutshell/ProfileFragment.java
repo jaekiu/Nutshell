@@ -27,9 +27,9 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("nani", "hello pls work");
         Bundle bundle = this.getArguments();
-        int myInt = 0;
+        String myInt = "";
         if (bundle != null) {
-            myInt = bundle.getInt("posterId", 0);
+            myInt = bundle.getString("posterId", "");
         }
         Log.d("nani", "posterID: " + myInt);
         View rootview = inflater.inflate(R.layout.fragment_profile, container, false);
