@@ -162,7 +162,7 @@ public class ExploreFragment extends Fragment {
             return mlist.size();
         }
 
-        public class RecyclerViewHolder extends RecyclerView.ViewHolder  {
+        public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             private CardView mCardView;
             private TextView mProjName;
             private TextView mProjDes;
@@ -178,24 +178,40 @@ public class ExploreFragment extends Fragment {
                 mProfile = itemView.findViewById(R.id.profilePic);
                 viewbutton = itemView.findViewById(R.id.viewbtn);
                 mApply = itemView.findViewById(R.id.applybtn);
-                mProfile.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                mProfile.setOnClickListener(this);
+                viewbutton.setOnClickListener(this);
+                mApply.setOnClickListener(this);
 
+
+            }
+            void bind (int position) {
+                Proj currProj = mlist.get(position);
+                String name = currProj.getName();
+                String description = currProj.getDesc();
+                String poster = currProj.getPoster();
+                StorageReference storageRef = FirebaseUtils.getFirebaseStorage().getReference();
+                StorageReference imgRef = storageRef.child("users").child(poster + ".jpeg");
+                // Handling images
+                Glide.with(context).load(imgRef).centerCrop().into(mProfile);
+                mProjName.setText(name);
+                mProjDes.setText(description);
+
+            }
+
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.profilePic:
+                        Fragment fragment = new ProfileFragment();
+                        Bundle bundle = new Bundle();
+                        int i = this.getLayoutPosition();
+                        Proj currProj = mlist.get(i);
+                        bundle.putInt("posterId", Integer.parseInt(currProj.getPoster()));
+                        fragment.setArguments(bundle);
                         ((ExploreActivity)context).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                                new ProfileFragment()).commit();
-                    }
-                });
-                viewbutton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getActivity(), ViewActivity.class);
-                        startActivity(intent);
-                    }
-                });
-                mApply.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                                fragment).commit();
+                        break;
+                    case R.id.applybtn:
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
                         builder.setCancelable(true);
                         builder.setTitle("Title");
@@ -214,22 +230,12 @@ public class ExploreFragment extends Fragment {
 
                         AlertDialog dialog = builder.create();
                         dialog.show();
-                    }
-                });
-
-            }
-            void bind (int position) {
-                Proj currProj = mlist.get(position);
-                String name = currProj.getName();
-                String description = currProj.getDesc();
-                String poster = currProj.getPoster();
-                StorageReference storageRef = FirebaseUtils.getFirebaseStorage().getReference();
-                StorageReference imgRef = storageRef.child("users").child(poster + ".jpeg");
-                // Handling images
-                Glide.with(context).load(imgRef).centerCrop().into(mProfile);
-                mProjName.setText(name);
-                mProjDes.setText(description);
-
+                        break;
+                    case R.id.viewbtn:
+                        Intent intent = new Intent(getActivity(), ViewActivity.class);
+                        startActivity(intent);
+                        break;
+                }
             }
         }
     }

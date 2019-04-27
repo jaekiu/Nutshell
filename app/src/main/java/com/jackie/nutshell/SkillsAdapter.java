@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+/** @author jackie
+ * Created on 4/6/19.
+ * Represents the Skills Adapter for displaying the skills after searching. */
 
 /** skills adapter for SetupActivity */
 public class SkillsAdapter extends BaseAdapter {

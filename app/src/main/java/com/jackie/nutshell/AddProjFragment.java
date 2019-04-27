@@ -26,13 +26,13 @@ public class AddProjFragment extends Fragment {
 
     public static final long FIND_SUGGESTION_SIMULATED_DELAY = 250;
 
-    private EditText search;
-    private EditText editName;
-    private EditText editDesc;
+    EditText search;
+    EditText editName;
+    EditText editDesc;
     private DatabaseReference usersDBRef;
     private DatabaseReference projsDBRef;
     private SkillsAdapter skillsAdapter;
-    private ArrayList<String> skills = new ArrayList<>();
+    ArrayList<String> skills = new ArrayList<>();
     private FloatingSearchView mSearchView;
 
 
@@ -66,13 +66,16 @@ public class AddProjFragment extends Fragment {
         return v;
     }
 
-    private void checkFields(String skills, String name, String desc, View v) {
+    boolean checkFields(String skills, String name, String desc) {
         if (skills == null || name == null || desc == null) {
-            Toast.makeText(v.getContext(), "Please fill out all the sections!", Toast.LENGTH_SHORT);
+            Toast.makeText(getContext(), "Please fill out all the sections!", Toast.LENGTH_SHORT);
+            return false;
         } else if (skills.equals("") || name.equals("") || desc.equals("")) {
-            Toast.makeText(v.getContext(), "Please fill out all the sections!", Toast.LENGTH_SHORT);
+            Toast.makeText(getContext(), "Please fill out all the sections!", Toast.LENGTH_SHORT);
+            return false;
         } else {
             sendToProjsDatabase(skills, name, desc);
+            return true;
         }
     }
 
@@ -179,7 +182,9 @@ public class AddProjFragment extends Fragment {
 
     /** Adds skill to skills ArrayList (used for populating GridView). */
     private void addSkill(String skill) {
-        if (skills.contains(skill)) {
+        if (skills.size() == 5) {
+            Toast.makeText(getContext(), "You can only have 5 skills!", Toast.LENGTH_SHORT).show();
+        } else if (skills.contains(skill)) {
             Toast.makeText(getContext(), "Skill already exists!", Toast.LENGTH_SHORT).show();
         } else {
             skills.add(skill);
