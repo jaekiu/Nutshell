@@ -206,10 +206,12 @@ public class ExploreFragment extends Fragment {
                         Bundle bundle = new Bundle();
                         int i = this.getLayoutPosition();
                         Proj currProj = mlist.get(i);
-                        bundle.putInt("posterId", Integer.parseInt(currProj.getPoster()));
+                        bundle.putString("posterId", currProj.getPoster());
                         fragment.setArguments(bundle);
                         ((ExploreActivity)context).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                                 fragment).commit();
+                        Log.d("nani", "hello8");
+
                         break;
                     case R.id.applybtn:
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);

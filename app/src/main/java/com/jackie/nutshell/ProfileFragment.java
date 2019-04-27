@@ -25,6 +25,7 @@ public class ProfileFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d("nani", "hello pls work");
         Bundle bundle = this.getArguments();
         int myInt = 0;
         if (bundle != null) {
