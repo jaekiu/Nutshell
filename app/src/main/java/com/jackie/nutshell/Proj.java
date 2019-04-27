@@ -1,37 +1,72 @@
 package com.jackie.nutshell;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class Proj {
-    public String _name;
-    public String _desc;
-    public String[] _skills;
-    public String _poster;
+import java.util.Arrays;
+
+public class Proj implements Parcelable {
+    private String name;
+    private String desc;
+    private String[] skills;
+    private String poster;
 
 
     public Proj(String name, String desc, String[] skills, String poster) {
-        _name = name;
-        _desc = desc;
-        _skills = skills;
-        _poster = poster;
+        this.name = name;
+        this.desc = desc;
+        this.skills = skills;
+        this.poster = poster;
     }
 
     public String getName() {
-        return _name;
+        return this.poster;
     }
 
     public String getDesc() {
-        return _desc;
+        return this.desc;
     }
 
     public String[] getSkills() {
-        return _skills;
+        return this.skills;
     }
 
     public String getPoster() {
-        return _poster;
+        return this.poster;
     }
+
+    // Parcelling part
+    public Proj(Parcel in){
+        String[] data = new String[3];
+
+        in.readStringArray(data);
+        // the order needs to be the same as in writeToParcel() method
+        this.name = data[0];
+        this.desc = data[1];
+        this.poster = data[3];
+    }
+
+    public int describeContents(){
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        String skillstring = Arrays.toString(this.skills);
+        dest.writeStringArray(new String[] {this.name, this.desc, skillstring, this.poster});
+    }
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public Proj createFromParcel(Parcel in) {
+            return new Proj(in);
+        }
+
+        public Proj[] newArray(int size) {
+            return new Proj[size];
+        }
+    };
+
 
 }
