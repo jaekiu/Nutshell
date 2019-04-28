@@ -226,6 +226,8 @@ public class ExploreFragment extends Fragment {
                         break;
                     case R.id.viewbtn:
                         Intent intent = new Intent(getActivity(), ViewActivity.class);
+                        Project currentproj = mlist.get(getAdapterPosition());
+                        intent.putExtra("Proj", currentproj);
                         startActivity(intent);
                         break;
                 }
