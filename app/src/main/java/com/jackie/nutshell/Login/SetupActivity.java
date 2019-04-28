@@ -1,4 +1,4 @@
-package com.jackie.nutshell;
+package com.jackie.nutshell.Login;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -26,8 +26,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.jackie.nutshell.ExploreActivity;
+import com.jackie.nutshell.R;
 import com.jackie.nutshell.Searching.DataHelper;
 import com.jackie.nutshell.Searching.SkillSuggestion;
+import com.jackie.nutshell.SingleInputDialogListener;
+import com.jackie.nutshell.SkillsAdapter;
 import com.jackie.nutshell.Utils.FirebaseUtils;
 import com.jackie.nutshell.Utils.Utils;
 

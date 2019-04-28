@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.jackie.nutshell.Models.Project;
+
 public class ViewActivity extends AppCompatActivity implements View.OnClickListener {
     private ImageButton back;
     private TextView name;
@@ -27,7 +29,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
 
         if(b!=null)
         {
-            Proj j = (Proj) b.get("Proj");
+            Project j = (Project) b.get("Proj");
             name.setText(j.getName());
             desc.setText(j.getDesc());
             poster.setText(j.getPoster());

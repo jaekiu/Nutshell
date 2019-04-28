@@ -20,28 +20,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
+import com.jackie.nutshell.Models.Project;
 import com.jackie.nutshell.Utils.FirebaseUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 public class ExploreFragment extends Fragment {
     //public class ExploreFragment extends Fragment implements View.OnClickListener {
     private RecyclerView mRecyclerView;
     private DatabaseReference usersDBRef;
     private DatabaseReference projsDBRef;
-    private ArrayList<Proj> projects;
+    private ArrayList<Project> projects;
     private RecyclerViewAdapter adapter;
 
 
@@ -70,17 +65,15 @@ public class ExploreFragment extends Fragment {
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<Proj> newProjs = new ArrayList<>();
+                ArrayList<Project> newProjs = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String name = snapshot.child("name").getValue(String.class);
                     String description = snapshot.child("description").getValue(String.class);
                     String date = snapshot.child("date").getValue(String.class);
                     String poster = snapshot.child("user").getValue(String.class);
-                    Proj p = new Proj(name, description, new String[]{}, poster);
+                    Project p = new Project(name, description, new String[]{}, poster);
                     newProjs.add(p);
                 }
-                // Need to reverse the list because Firebase doesn't have a descending ordering function.
-                // https://stackoverflow.com/questions/34156996/firebase-data-desc-sorting-in-android
                 projects.clear();
                 projects.addAll(newProjs);
                 adapter.notifyDataSetChanged();
@@ -93,54 +86,18 @@ public class ExploreFragment extends Fragment {
         };
         projsDBRef.orderByKey().addValueEventListener(postListener);
 
-
-//        List<String> list = new ArrayList<>();
-//        list.add("Black Pearl");
-//        list.add("Super Bowl");
-//        list.add("DJ");
-//        list.add("Developer");
-//        list.add("Sleep");
-
         return v;
 
 
 
     }
 
-//    public class RecyclerViewHolder extends RecyclerView.ViewHolder {
-//        public CardView mCardView;
-//        public TextView mProjName;
-//        public TextView mProjDes;
-//        public ImageView mProfile;
-//        public Button viewbutton;
-//        public Button mView;
-//        public Button mApply;
-//
-//
-//
-//        public RecyclerViewHolder(View itemView) {
-//            super(itemView);
-//        }
-//
-//        public RecyclerViewHolder(LayoutInflater inflater, ViewGroup container) {
-//            super(inflater.inflate(R.layout.cardview, container, false));
-//
-//            mCardView = itemView.findViewById(R.id.card);
-//            mProjName = itemView.findViewById(R.id.proj_name);
-//            mProjDes = itemView.findViewById(R.id.proj_des);
-//            mProfile = itemView.findViewById(R.id.profilePic);
-//            viewbutton = itemView.findViewById(R.id.viewbtn);
-//            mApply = itemView.findViewById(R.id.applybtn);
-//
-//        }
-//    }
-
     public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> {
 
-        private List<Proj> mlist;
+        private List<Project> mlist;
         private Context context;
 
-        public RecyclerViewAdapter(List<Proj> list, Context context) {
+        public RecyclerViewAdapter(List<Project> list, Context context) {
 
             this.mlist = list;
             this.context = context;
@@ -185,7 +142,7 @@ public class ExploreFragment extends Fragment {
 
             }
             void bind (int position) {
-                Proj currProj = mlist.get(position);
+                Project currProj = mlist.get(position);
                 String name = currProj.getName();
                 String description = currProj.getDesc();
                 String poster = currProj.getPoster();
@@ -205,7 +162,7 @@ public class ExploreFragment extends Fragment {
                         Fragment fragment = new ProfileFragment();
                         Bundle bundle = new Bundle();
                         int i = this.getLayoutPosition();
-                        Proj currProj = mlist.get(i);
+                        Project currProj = mlist.get(i);
                         bundle.putString("posterId", currProj.getPoster());
                         fragment.setArguments(bundle);
                         ((ExploreActivity)context).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
@@ -233,8 +190,8 @@ public class ExploreFragment extends Fragment {
                         break;
                     case R.id.viewbtn:
                         Intent intent = new Intent(getActivity(), ViewActivity.class);
-                        Proj currentproj = mlist.get(getAdapterPosition());
-                        intent.putExtra("Proj", currentproj);
+                        Project currentProj = mlist.get(getAdapterPosition());
+                        intent.putExtra("Project", currentProj);
                         startActivity(intent);
                         break;
                 }
