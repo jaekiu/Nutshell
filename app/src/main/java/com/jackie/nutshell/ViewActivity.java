@@ -30,6 +30,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             Proj j = (Proj) b.get("Proj");
             name.setText(j.getName());
             desc.setText(j.getDesc());
+            poster.setText(j.getPoster());
 
         }
     }

@@ -8,7 +8,8 @@ import android.widget.TextView;
 
 import java.util.Arrays;
 
-public class Proj implements Parcelable {
+public class Proj implements Parcelable{
+
     private String name;
     private String desc;
     private String[] skills;
@@ -38,15 +39,10 @@ public class Proj implements Parcelable {
         return this.poster;
     }
 
-    // Parcelling part
     public Proj(Parcel in){
-        String[] data = new String[3];
-
-        in.readStringArray(data);
-        // the order needs to be the same as in writeToParcel() method
-        this.name = data[0];
-        this.desc = data[1];
-        this.poster = data[3];
+        name = in.readString();
+        desc = in.readString();
+        poster = in.readString();
     }
 
     public int describeContents(){
@@ -55,8 +51,9 @@ public class Proj implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        String skillstring = Arrays.toString(this.skills);
-        dest.writeStringArray(new String[] {this.name, this.desc, skillstring, this.poster});
+        dest.writeString(name);
+        dest.writeString(desc);
+        dest.writeString(poster);
     }
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         public Proj createFromParcel(Parcel in) {

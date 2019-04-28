@@ -1,18 +1,5 @@
 package com.jackie.nutshell;
 
-import android.content.Intent;
-import android.graphics.Typeface;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -42,75 +29,68 @@ import com.jackie.nutshell.Utils.FirebaseUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectsFragment extends Fragment {
 
-    private Toolbar toolbar;
-    private ViewPager viewPager;
-    private ViewPagerAdapter adapter;
-    private TabLayout t;
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class AppliedFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private DatabaseReference usersDBRef;
     private DatabaseReference projsDBRef;
     private ArrayList<Proj> projects;
-    private RecyclerViewAdapter madapter;
+    private RecyclerViewAdapter adapter;
 
 
-    public ProjectsFragment() { }
+    public AppliedFragment() {
+        // Required empty public constructor
+    }
 
-    @NonNull
-    public static ProjectsFragment newInstance() { return new ProjectsFragment(); }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootview = inflater.inflate(R.layout.fragment_projects, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View v =  inflater.inflate(R.layout.fragment_applied, container, false);
 
-        viewPager = rootview.findViewById(R.id.pager);
-        adapter = new ViewPagerAdapter(getFragmentManager());
-        viewPager.setAdapter(adapter);
-        t = rootview.findViewById(R.id.tabs);
-        t.setupWithViewPager(viewPager);
-
-
-
-//        usersDBRef = FirebaseUtils.getUsersDatabaseRef();
-//        projsDBRef = FirebaseUtils.getProjsDatabaseRef();
-//        projects = new ArrayList<>();
-//
-//
-//        mRecyclerView = rootview.findViewById(R.id.recycler_view);
-//        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        madapter = new RecyclerViewAdapter(projects, getContext());
-//        mRecyclerView.setAdapter(madapter);
-//
-//        ValueEventListener postListener = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                ArrayList<Proj> newProjs = new ArrayList<>();
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    String name = snapshot.child("name").getValue(String.class);
-//                    String description = snapshot.child("description").getValue(String.class);
-//                    String date = snapshot.child("date").getValue(String.class);
-//                    String poster = snapshot.child("user").getValue(String.class);
-//                    Proj p = new Proj(name, description, new String[]{}, poster);
-//                    newProjs.add(p);
-//                }
-//
-//                projects.clear();
-//                projects.addAll(newProjs);
-//                adapter.notifyDataSetChanged();
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.w("ERROR", "loadPost:onCancelled", databaseError.toException());
-//            }
-//        };
-//        projsDBRef.orderByKey().addValueEventListener(postListener);
+        usersDBRef = FirebaseUtils.getUsersDatabaseRef();
+        projsDBRef = FirebaseUtils.getProjsDatabaseRef();
+        projects = new ArrayList<>();
 
 
-        return rootview;
+        mRecyclerView = v.findViewById(R.id.recycler_view);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapter = new RecyclerViewAdapter(projects, getContext());
+        mRecyclerView.setAdapter(adapter);
+
+        // Realtime database retrieval.
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<Proj> newProjs = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String name = snapshot.child("name").getValue(String.class);
+                    String description = snapshot.child("description").getValue(String.class);
+                    String date = snapshot.child("date").getValue(String.class);
+                    String poster = snapshot.child("user").getValue(String.class);
+                    Proj p = new Proj(name, description, new String[]{}, poster);
+                    newProjs.add(p);
+                }
+                // Need to reverse the list because Firebase doesn't have a descending ordering function.
+                // https://stackoverflow.com/questions/34156996/firebase-data-desc-sorting-in-android
+                projects.clear();
+                projects.addAll(newProjs);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("ERROR", "loadPost:onCancelled", databaseError.toException());
+            }
+        };
+        projsDBRef.orderByKey().addValueEventListener(postListener);
+
+        return v;
     }
 
     public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> {
@@ -226,4 +206,5 @@ public class ProjectsFragment extends Fragment {
 
 
     }
+
 }

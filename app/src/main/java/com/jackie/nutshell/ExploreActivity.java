@@ -213,6 +213,8 @@ public class ExploreActivity extends AppCompatActivity implements NavigationView
             case R.id.nav_projects:
                 toolbar.setTitle("Projects");
                 invalidateOptionsMenu();
+//                Intent i3 = new Intent(this, ProjectActivity.class);
+//                startActivity(i3);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new ProjectsFragment()).commit();
                 break;
