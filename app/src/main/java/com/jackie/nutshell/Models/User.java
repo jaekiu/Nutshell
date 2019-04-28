@@ -14,13 +14,13 @@ public class User {
     private String number;
     private ArrayList<String> skills;
 
-    public User(String name, String karma, String github, String linkedin, String number, ArrayList<String> skills) {
+    public User(String name, String karma, String github, String linkedin, String number) {
         this.name = name;
         this.karma = karma;
         this.github = github;
         this.linkedin = linkedin;
         this.number = number;
-        this.skills = skills;
+        // this.skills = skills;
     }
 
     public String getName() {
@@ -41,6 +41,10 @@ public class User {
 
     public String getNumber() {
         return this.number;
+    }
+
+    public ArrayList<String> getSkills() {
+        return this.skills;
     }
 
 }

@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ProjectProfile"></activity>
         <activity android:name=".ViewActivity" />
-        <activity android:name=".LoginActivity">
+        <activity android:name=".Login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,8 +29,8 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".SetupActivity" />
+        <activity android:name=".Login.SignUpActivity" />
+        <activity android:name=".Login.SetupActivity" />
     </application>
 
 </manifest>
