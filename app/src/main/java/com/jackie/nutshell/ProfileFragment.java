@@ -1,5 +1,6 @@
 package com.jackie.nutshell;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -42,6 +43,7 @@ public class ProfileFragment extends Fragment {
     private DatabaseReference _userRef;
     private String _id;
     private Context _c;
+    private Activity _activity;
 
     public ProfileFragment() { }
 
@@ -68,6 +70,7 @@ public class ProfileFragment extends Fragment {
         _github = rootview.findViewById(R.id.github);
         _userRef = FirebaseUtils.getUsersDatabaseRef().child(_id);
         _c = getContext();
+        _activity = getActivity();
 
         getUserInfo();
 
@@ -109,25 +112,41 @@ public class ProfileFragment extends Fragment {
                         Integer karma = snapshot.getValue(Integer.class);
                         _karma.setText(karma + " Karma");
                     } else if (key.equals("linkedin")) {
-                        final String linkedin = snapshot.getValue(String.class);
+                        String linkedin = snapshot.getValue(String.class);
+                        if (linkedin != null && !linkedin.equals("") && !linkedin.startsWith("http://")) {
+                            linkedin = "http://" + linkedin;
+                        }
+                        final String finalized = linkedin;
                         _linkedin.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-
-                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(linkedin));
+                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(finalized));
                                 startActivity(browserIntent);
                             }
                         });
                     } else if (key.equals("github")) {
-                        final String github = snapshot.getValue(String.class);
-                        _linkedin.setOnClickListener(new View.OnClickListener() {
+                        String github = snapshot.getValue(String.class);
+                        if (github != null && !github.equals("") && !github.startsWith("http://")) {
+                            github = "http://" + github;
+                        }
+                        final String finalized = github;
+//                        if (github != null && !github.equals("")) {
+//                            _github.setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View v) {
+//                                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(finalized));
+//                                    startActivity(browserIntent);
+//                                }
+//                            });
+//                        }
+                        _github.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-
-                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(github));
+                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(finalized));
                                 startActivity(browserIntent);
                             }
                         });
+
                     }
 //                    else if (key.equals("skills")) {
 //                        ArrayList value = snapshot.getValue(ArrayList.class);
