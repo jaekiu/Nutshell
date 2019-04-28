@@ -199,9 +199,6 @@ public class ExploreActivity extends AppCompatActivity implements NavigationView
                 Toast.makeText(this, "You are now signed out.", Toast.LENGTH_SHORT).show();
                 startActivity(i2);
                 break;
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-//                        new LogoutFragment()).commit();
-//                break;
             case R.id.nav_profile:
                 toolbar.setTitle("Profile");
                 invalidateOptionsMenu();

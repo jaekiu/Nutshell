@@ -86,47 +86,11 @@ public class ExploreFragment extends Fragment {
         };
         projsDBRef.orderByKey().addValueEventListener(postListener);
 
-
-//        List<String> list = new ArrayList<>();
-//        list.add("Black Pearl");
-//        list.add("Super Bowl");
-//        list.add("DJ");
-//        list.add("Developer");
-//        list.add("Sleep");
-
         return v;
 
 
 
     }
-
-//    public class RecyclerViewHolder extends RecyclerView.ViewHolder {
-//        public CardView mCardView;
-//        public TextView mProjName;
-//        public TextView mProjDes;
-//        public ImageView mProfile;
-//        public Button viewbutton;
-//        public Button mView;
-//        public Button mApply;
-//
-//
-//
-//        public RecyclerViewHolder(View itemView) {
-//            super(itemView);
-//        }
-//
-//        public RecyclerViewHolder(LayoutInflater inflater, ViewGroup container) {
-//            super(inflater.inflate(R.layout.cardview, container, false));
-//
-//            mCardView = itemView.findViewById(R.id.card);
-//            mProjName = itemView.findViewById(R.id.proj_name);
-//            mProjDes = itemView.findViewById(R.id.proj_des);
-//            mProfile = itemView.findViewById(R.id.profilePic);
-//            viewbutton = itemView.findViewById(R.id.viewbtn);
-//            mApply = itemView.findViewById(R.id.applybtn);
-//
-//        }
-//    }
 
     public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> {
 
@@ -226,8 +190,8 @@ public class ExploreFragment extends Fragment {
                         break;
                     case R.id.viewbtn:
                         Intent intent = new Intent(getActivity(), ViewActivity.class);
-                        Project currentproj = mlist.get(getAdapterPosition());
-                        intent.putExtra("Proj", currentproj);
+                        Project currentProj = mlist.get(getAdapterPosition());
+                        intent.putExtra("Project", currentProj);
                         startActivity(intent);
                         break;
                 }
