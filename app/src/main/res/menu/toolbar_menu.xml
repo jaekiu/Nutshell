@@ -12,6 +12,7 @@
     <item android:id="@+id/nav_submitProj"
         android:title="SubmitProj"
         app:showAsAction="ifRoom"
+        android:visible="false"
         android:icon="@drawable/ic_check_black_24dp"/>
 
 
