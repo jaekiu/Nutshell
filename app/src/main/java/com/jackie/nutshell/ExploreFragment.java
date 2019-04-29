@@ -193,6 +193,7 @@ public class ExploreFragment extends Fragment {
                         dialog.show();
                         break;
                     case R.id.viewbtn:
+
                         Intent intent = new Intent(getActivity(), ViewActivity.class);
                         Project currentProj = mlist.get(getAdapterPosition());
                         intent.putExtra("Project", currentProj);

@@ -86,23 +86,28 @@ public class ProfileFragment extends Fragment {
         getUserInfo();
 
         // Configures the tabs
-        _about = rootview.findViewById(R.id.about);
-        _about.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                _about.setTypeface(Typeface.DEFAULT_BOLD);
-                _projects.setTypeface(Typeface.DEFAULT);
-            }
-        });
+//        _about = rootview.findViewById(R.id.about);
+//        _about.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                _about.setTypeface(Typeface.DEFAULT_BOLD);
+//                _projects.setTypeface(Typeface.DEFAULT);
+//            }
+//        });
 
         _projects = rootview.findViewById(R.id.projects);
         _projects.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _about.setTypeface(Typeface.DEFAULT_BOLD);
-                _projects.setTypeface(Typeface.DEFAULT);
-                Intent i = new Intent(getContext(), ProjectProfile.class);
-                startActivity(i);
+                Fragment fragment = new ProfileProjectFragment();
+                Bundle bundle = new Bundle();
+                User u = new User(_id, _name.getText().toString(), _karma.getText().toString());
+                bundle.putSerializable("user", u);
+                fragment.setArguments(bundle);
+                ((ExploreActivity)_c).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        fragment).commit();
+//                Intent i = new Intent(getContext(), ProjectProfile.class);
+//                startActivity(i);
             }
         });
 

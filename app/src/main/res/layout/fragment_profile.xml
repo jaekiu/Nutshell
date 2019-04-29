@@ -42,6 +42,8 @@
         android:layout_marginTop="16dp"
         android:fontFamily="@font/montserrat"
         android:text="About"
+        android:textColor="@color/colorBrownDark"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/karmapic" />
 
