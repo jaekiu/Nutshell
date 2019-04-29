@@ -38,6 +38,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/** @author jackie
+ * Created on 4/28/19.
+ * Represents the Profile About Page for the Profile Fragment. */
+
 public class ProfileFragment extends Fragment {
 
     TextView _about;
@@ -86,6 +90,10 @@ public class ProfileFragment extends Fragment {
         _skillsAdapterReg = new SkillsAdapterReg(getContext(), skills);
         _gridview.setAdapter(_skillsAdapterReg);
 
+        StorageReference storageRef = FirebaseUtils.getFirebaseStorage().getReference();
+        StorageReference imgRef = storageRef.child("users").child(_id + ".jpeg");
+        // Handling images
+        Glide.with(_c).load(imgRef).centerCrop().into(_pic);
         getUserInfo();
 
         // Add line to current open tab
@@ -258,11 +266,6 @@ public class ProfileFragment extends Fragment {
                 // ArrayList<String> skills = attributes.get("skills");
 //                _name.setText(name);
 //                _karma.setText(karma + " Karma");
-
-                StorageReference storageRef = FirebaseUtils.getFirebaseStorage().getReference();
-                StorageReference imgRef = storageRef.child("users").child(_id + ".jpeg");
-                // Handling images
-                Glide.with(_c).load(imgRef).centerCrop().into(_pic);
             }
 
             @Override

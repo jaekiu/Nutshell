@@ -21,6 +21,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="20dp"
             android:text="Description"
+            android:textColor="@color/colorBrownMedium"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/profilePic"
             app:layout_constraintTop_toBottomOf="@+id/proj_name" />
@@ -45,7 +46,7 @@
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@+id/profilePic"
             android:text="Project Name"
-            android:textColor="@android:color/black"
+            android:textColor="@color/colorBrownDark"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/profilePic"

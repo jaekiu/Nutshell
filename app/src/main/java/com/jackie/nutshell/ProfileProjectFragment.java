@@ -33,6 +33,10 @@ import com.jackie.nutshell.Utils.Utils;
 
 import java.util.ArrayList;
 
+/** @author jackie
+ * Created on 4/28/19.
+ * Represents the Profile Projects Page for the Profile Fragment. */
+
 public class ProfileProjectFragment extends Fragment {
     TextView _about;
     TextView _projects;

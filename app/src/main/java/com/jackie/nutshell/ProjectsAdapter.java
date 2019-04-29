@@ -23,6 +23,10 @@ import com.jackie.nutshell.Utils.FirebaseUtils;
 
 import java.util.List;
 
+/** @author jackie
+ * Created on 4/28/19.
+ * Represents the Projects Adapter for populating projects. */
+
 public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.ProjectsViewHolder> {
 
     private List<Project> mlist;
