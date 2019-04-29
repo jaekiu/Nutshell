@@ -181,7 +181,7 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
                         query = "AI";
                         break;
                     case "Graphic Design":
-                        query = "Graphic Design";
+                        query = "GFX";
                         break;
                     default:
                         query = currentQuery;

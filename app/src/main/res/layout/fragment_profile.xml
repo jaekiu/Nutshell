@@ -157,48 +157,19 @@
         app:layout_constraintStart_toEndOf="@+id/skillspic"
         app:layout_constraintTop_toTopOf="@+id/skillspic" />
 
-
-    <!--<co.ceryle.segmentedbutton.SegmentedButtonGroup-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_margin="10dp"-->
-        <!--android:layout_marginStart="8dp"-->
-        <!--android:layout_marginEnd="8dp"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintHorizontal_bias="1.0"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:sbg_animateSelector="bounce"-->
-        <!--app:sbg_animateSelectorDuration="1000"-->
-        <!--app:sbg_backgroundColor="@color/light_gray"-->
-        <!--app:sbg_dividerColor="@color/colorBrownDark"-->
-        <!--app:sbg_dividerPadding="10dp"-->
-        <!--app:sbg_dividerRadius="10dp"-->
-        <!--app:sbg_dividerSize="1dp"-->
-        <!--app:sbg_position="1"-->
-        <!--app:sbg_radius="2dp"-->
-        <!--app:sbg_ripple="true"-->
-        <!--app:sbg_rippleColor="@color/light_gray"-->
-        <!--app:sbg_selectorColor="@color/colorBrownDark"-->
-        <!--app:sbg_selectorTextColor="@color/white"-->
-        <!--app:sbg_shadow="true"-->
-        <!--app:sbg_shadowElevation="3dp"-->
-        <!--app:sbg_shadowMargin="4dp"-->
-        <!--tools:layout_editor_absoluteY="262dp">-->
-
-        <!--<Button-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:minHeight="10dp"-->
-            <!--android:text="About"-->
-            <!--android:textAllCaps="false" />-->
-
-        <!--<Button-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:minHeight="10dp"-->
-            <!--android:text="Projects"-->
-            <!--android:textAllCaps="false" />-->
-
-    <!--</co.ceryle.segmentedbutton.SegmentedButtonGroup>-->
+    <GridView
+        android:id="@+id/gridView"
+        android:layout_width="0dp"
+        android:layout_height="194dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="13dp"
+        android:horizontalSpacing="7dp"
+        android:numColumns="2"
+        android:verticalSpacing="7dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/skills_head"
+        app:layout_constraintTop_toBottomOf="@+id/skills_head"
+        app:layout_constraintVertical_bias="0.0" />
 
 </android.support.constraint.ConstraintLayout>

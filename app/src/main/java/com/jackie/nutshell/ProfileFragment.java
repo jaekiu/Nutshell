@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
+import com.jackie.nutshell.Models.Project;
 import com.jackie.nutshell.Models.User;
 import com.jackie.nutshell.Utils.FirebaseUtils;
 
@@ -42,10 +44,13 @@ public class ProfileFragment extends Fragment {
     private TextView _name;
     private Button _linkedin;
     private Button _github;
+    private GridView _gridview;
     private DatabaseReference _userRef;
     private String _id;
     private Context _c;
     private Activity _activity;
+    private SkillsAdapterReg _skillsAdapterReg;
+    private ArrayList<String> skills = new ArrayList<>(5);
 
     public ProfileFragment() { }
 
@@ -70,9 +75,13 @@ public class ProfileFragment extends Fragment {
         _karma = rootview.findViewById(R.id.karma);
         _linkedin = rootview.findViewById(R.id.linkedin);
         _github = rootview.findViewById(R.id.github);
+        _gridview = rootview.findViewById(R.id.gridView);
         _userRef = FirebaseUtils.getUsersDatabaseRef().child(_id);
         _c = getContext();
         _activity = getActivity();
+
+        _skillsAdapterReg = new SkillsAdapterReg(getContext(), skills);
+        _gridview.setAdapter(_skillsAdapterReg);
 
         getUserInfo();
 
@@ -187,11 +196,43 @@ public class ProfileFragment extends Fragment {
                         }
 
 
+                    } else if (key.equals("skills")) {
+                        ValueEventListener postListener = new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                int i = 0;
+                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                    // category is an ArrayList you can declare above
+                                    String skill = dataSnapshot.child(String.valueOf(i)).getValue(String.class);
+                                    switch (skill) {
+                                        case "Machine Learning":
+                                            skill = "ML";
+                                            break;
+                                        case "Artificial Intelligence":
+                                            skill = "AI";
+                                            break;
+                                        case "Graphic Design":
+                                            skill = "GFX";
+                                            break;
+                                    }
+                                    if (skill.length() > 10 ) {
+                                        skill = skill.substring(0, 8) + "...";
+                                    }
+                                    skills.add(skill);
+                                    _skillsAdapterReg.notifyDataSetChanged();
+                                    i++;
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.w("ERROR", "loadPost:onCancelled", databaseError.toException());
+                            }
+                        };
+                        _userRef.child("skills").addValueEventListener(postListener);
+
                     }
-//                    else if (key.equals("skills")) {
-//                        ArrayList value = snapshot.getValue(ArrayList.class);
-//                        attributes.put(key, value);
-//                    }
 //                    else {
 //                        String value = snapshot.getValue(String.class);
 //                        attributes.put(key, value);
