@@ -1,12 +1,12 @@
 package com.jackie.nutshell;
 
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
+import com.jackie.nutshell.Models.Project;
 import com.jackie.nutshell.Utils.FirebaseUtils;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class MyProjectsFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private DatabaseReference usersDBRef;
     private DatabaseReference projsDBRef;
-    private ArrayList<Proj> projects;
+    private ArrayList<Project> projects;
     private RecyclerViewAdapter adapter;
 
     public MyProjectsFragment() {
@@ -66,17 +67,15 @@ public class MyProjectsFragment extends Fragment {
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<Proj> newProjs = new ArrayList<>();
+                ArrayList<Project> newProjs = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String name = snapshot.child("name").getValue(String.class);
                     String description = snapshot.child("description").getValue(String.class);
                     String date = snapshot.child("date").getValue(String.class);
                     String poster = snapshot.child("user").getValue(String.class);
-                    Proj p = new Proj(name, description, new String[]{}, poster);
+                    Project p = new Project(name, description, new String[]{}, poster);
                     newProjs.add(p);
                 }
-                // Need to reverse the list because Firebase doesn't have a descending ordering function.
-                // https://stackoverflow.com/questions/34156996/firebase-data-desc-sorting-in-android
                 projects.clear();
                 projects.addAll(newProjs);
                 adapter.notifyDataSetChanged();
@@ -95,10 +94,10 @@ public class MyProjectsFragment extends Fragment {
 
     public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> {
 
-        private List<Proj> mlist;
+        private List<Project> mlist;
         private Context context;
 
-        public RecyclerViewAdapter(List<Proj> list, Context context) {
+        public RecyclerViewAdapter(List<Project> list, Context context) {
 
             this.mlist = list;
             this.context = context;
@@ -143,7 +142,7 @@ public class MyProjectsFragment extends Fragment {
 
             }
             void bind (int position) {
-                Proj currProj = mlist.get(position);
+                Project currProj = mlist.get(position);
                 String name = currProj.getName();
                 String description = currProj.getDesc();
                 String poster = currProj.getPoster();
@@ -163,17 +162,17 @@ public class MyProjectsFragment extends Fragment {
                         Fragment fragment = new ProfileFragment();
                         Bundle bundle = new Bundle();
                         int i = this.getLayoutPosition();
-                        Proj currProj = mlist.get(i);
+                        Project currProj = mlist.get(i);
                         bundle.putString("posterId", currProj.getPoster());
                         fragment.setArguments(bundle);
                         ((ExploreActivity)context).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                                 fragment).commit();
                         break;
                     case R.id.applybtn:
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
                         builder.setCancelable(true);
-                        builder.setTitle("Title");
-                        builder.setMessage("Message");
+                        builder.setTitle("Confirm application?");
+                        builder.setMessage("Confirming will send your profile to the poster");
                         builder.setPositiveButton("Confirm",
                                 new DialogInterface.OnClickListener() {
                                     @Override
@@ -191,8 +190,8 @@ public class MyProjectsFragment extends Fragment {
                         break;
                     case R.id.viewbtn:
                         Intent intent = new Intent(getActivity(), ViewActivity.class);
-                        Proj currentproj = mlist.get(getAdapterPosition());
-                        intent.putExtra("Proj", currentproj);
+                        Project currentProj = mlist.get(getAdapterPosition());
+                        intent.putExtra("Project", currentProj);
                         startActivity(intent);
                         break;
                 }

@@ -156,7 +156,7 @@ public class ExploreFragment extends Fragment {
             }
 
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 switch (v.getId()) {
                     case R.id.profilePic:
                         Fragment fragment = new ProfileFragment();
@@ -171,12 +171,16 @@ public class ExploreFragment extends Fragment {
                     case R.id.applybtn:
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
                         builder.setCancelable(true);
-                        builder.setTitle("Title");
-                        builder.setMessage("Message");
+                        builder.setTitle("Confirm application?");
+                        builder.setMessage("Confirming will send your profile to the poster");
                         builder.setPositiveButton("Confirm",
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        Button apply = v.findViewById(R.id.applybtn);
+                                        apply.setEnabled(false);
+                                        apply.setText("Applied");
+
                                     }
                                 });
                         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

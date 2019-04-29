@@ -6,46 +6,50 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.storage.StorageReference;
 import com.jackie.nutshell.Models.Project;
+import com.jackie.nutshell.Utils.FirebaseUtils;
 
-public class ViewActivity extends AppCompatActivity implements View.OnClickListener {
-    private ImageButton back;
+public class ViewActivity extends AppCompatActivity {
     private TextView name;
     private TextView desc;
-    private TextView poster;
+    private String poster;
+    private ImageView posterpic;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view);
 
-        back = findViewById(R.id.backarrow);
         name = findViewById(R.id.titletext);
         desc = findViewById(R.id.descText);
+        posterpic = findViewById(R.id.imageView);
 
         Intent in= getIntent();
         Bundle b = in.getExtras();
 
         if(b!=null)
         {
-            Project j = (Project) b.get("Proj");
+            Project j = (Project) b.get("Project");
+
             name.setText(j.getName());
             desc.setText(j.getDesc());
-            poster.setText(j.getPoster());
+            poster = j.getPoster();
+            StorageReference storageRef = FirebaseUtils.getFirebaseStorage().getReference();
+            StorageReference imgRef = storageRef.child("users").child(poster + ".jpeg");
+            // Handling images
+            Glide.with(getApplicationContext()).load(imgRef).centerCrop().into(posterpic);
+
+
 
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.backarrow:
-                Intent i = new Intent(ViewActivity.this, ExploreFragment.class);
-                startActivity(i);
-                break;
-        }
-    }
+
 
 
 }
