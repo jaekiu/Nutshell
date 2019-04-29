@@ -30,7 +30,7 @@ import com.jackie.nutshell.ExploreActivity;
 import com.jackie.nutshell.R;
 import com.jackie.nutshell.Searching.DataHelper;
 import com.jackie.nutshell.Searching.SkillSuggestion;
-import com.jackie.nutshell.SingleInputDialogListener;
+import com.jackie.nutshell.Utils.SingleInputDialogListener;
 import com.jackie.nutshell.SkillsAdapter;
 import com.jackie.nutshell.Utils.FirebaseUtils;
 import com.jackie.nutshell.Utils.Utils;

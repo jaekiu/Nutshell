@@ -12,8 +12,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.jackie.nutshell.SingleInputDialogListener;
-
 public class Utils {
     /**
      * Convert dp to px value.

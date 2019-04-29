@@ -3,6 +3,7 @@ package com.jackie.nutshell;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -30,6 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.jackie.nutshell.Login.LoginActivity;
+import com.jackie.nutshell.Models.Project;
 import com.jackie.nutshell.Utils.FirebaseUtils;
 
 import java.util.Arrays;
@@ -202,8 +204,12 @@ public class ExploreActivity extends AppCompatActivity implements NavigationView
             case R.id.nav_profile:
                 toolbar.setTitle("Profile");
                 invalidateOptionsMenu();
+                Fragment fragment = new ProfileFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("posterId", user.getUid());
+                fragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new ProfileFragment()).commit();
+                        fragment).commit();
                 break;
             case R.id.nav_projects:
                 toolbar.setTitle("Projects");

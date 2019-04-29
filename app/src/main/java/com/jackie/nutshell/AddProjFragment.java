@@ -3,8 +3,13 @@ package com.jackie.nutshell;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -26,7 +31,6 @@ public class AddProjFragment extends Fragment {
 
     public static final long FIND_SUGGESTION_SIMULATED_DELAY = 250;
 
-    EditText search;
     EditText editName;
     EditText editDesc;
     private DatabaseReference usersDBRef;
@@ -34,8 +38,7 @@ public class AddProjFragment extends Fragment {
     private SkillsAdapter skillsAdapter;
     ArrayList<String> skills = new ArrayList<>();
     private FloatingSearchView mSearchView;
-
-
+    private Toolbar toolbar;
 
     public AddProjFragment() { }
 
@@ -47,17 +50,33 @@ public class AddProjFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_addproj, container, false);
 
-        this.search = v.findViewById(R.id.search);
+        mSearchView = v.findViewById(R.id.search);
         this.editName = v.findViewById(R.id.editName);
         this.editDesc = v.findViewById(R.id.editDesc);
         usersDBRef = FirebaseUtils.getUsersDatabaseRef();
         projsDBRef = FirebaseUtils.getProjsDatabaseRef();
-        mSearchView = v.findViewById(R.id.floating_search_view);
 
         // Handling GridView for skills
         GridView gridView = v.findViewById(R.id.skillGridView);
         skillsAdapter = new SkillsAdapter(getContext(), skills);
         gridView.setAdapter(skillsAdapter);
+
+//        ExploreActivity actionBarActivity = (ExploreActivity) getActivity();
+//        Toolbar toolbar = ExploreActivity.getView().findViewById(R.id.toolbar);
+//        actionBarActivity.setSupportActionBar(toolbar);
+//        toolbar.setTitle("Add Project");
+//        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                switch (item.getItemId()) {
+//                    case R.id.nav_submitProj:
+//                        Log.d("nani", "haha does this work");
+//                        // do what ever you want here
+//                }
+//                return true;
+//            }
+//        });
+
 
         // Handling searching
         setupSearch();

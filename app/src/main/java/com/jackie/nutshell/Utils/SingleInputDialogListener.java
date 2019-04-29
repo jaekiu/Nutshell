@@ -1,4 +1,4 @@
-package com.jackie.nutshell;
+package com.jackie.nutshell.Utils;
 
 public interface SingleInputDialogListener {
 

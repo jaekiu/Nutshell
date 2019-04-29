@@ -8,12 +8,17 @@
 
     <TextView
         android:id="@+id/titletext"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="8dp"
+        android:fontFamily="@font/montserrat"
         android:text="TextView"
+        android:textAlignment="center"
+        android:textColor="@color/colorBrownDark"
+        android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,7 +29,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
+        android:fontFamily="@font/montserrat"
         android:text="Poster"
+        android:textColor="@color/colorBrownDark"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titletext" />
 
@@ -45,8 +53,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="27dp"
+        android:fontFamily="@font/montserrat"
         android:text="Description"
+        android:textColor="@color/colorBrownDark"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/posterText" />
 
@@ -58,6 +69,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
+        android:fontFamily="@font/montserrat"
         android:gravity="start"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -70,19 +82,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
+        android:fontFamily="@font/montserrat"
         android:text="Skills Needed"
+        android:textColor="@color/colorBrownDark"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/descText" />
-
-    <SearchView
-        android:id="@+id/search"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/skillsText" />
 
 </android.support.constraint.ConstraintLayout>

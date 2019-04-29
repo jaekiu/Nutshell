@@ -2,6 +2,7 @@ package com.jackie.nutshell;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -111,41 +113,79 @@ public class ProfileFragment extends Fragment {
                     } else if (key.equals("karma")) {
                         Integer karma = snapshot.getValue(Integer.class);
                         _karma.setText(karma + " Karma");
-                    } else if (key.equals("linkedin")) {
+                    } else if (key.equals("linkedIn")) {
                         String linkedin = snapshot.getValue(String.class);
-                        if (linkedin != null && !linkedin.equals("") && !linkedin.startsWith("http://")) {
+                        if (linkedin != null && !linkedin.equals("") && !linkedin.startsWith("http://") && !linkedin.startsWith("http:s//")) {
                             linkedin = "http://" + linkedin;
                         }
                         final String finalized = linkedin;
-                        _linkedin.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(finalized));
-                                startActivity(browserIntent);
-                            }
-                        });
+                        Log.d("nani", "what is my linkedin: " + finalized);
+
+                        if (linkedin == null && linkedin.equals("")) {
+                            _linkedin.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(_c);
+                                    builder.setCancelable(true);
+                                    builder.setTitle("Error!");
+                                    builder.setMessage("User has not linked his or her LinkedIn!");
+                                    builder.setPositiveButton("OK",
+                                            new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                }
+                                            });
+
+                                    AlertDialog dialog = builder.create();
+                                    dialog.show();
+                                }
+                            });
+                        } else {
+                            _linkedin.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Log.d("nani", "what is my linkedin: " + finalized);
+
+                                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(finalized));
+                                    startActivity(browserIntent);
+                                }
+                            });
+                        }
                     } else if (key.equals("github")) {
                         String github = snapshot.getValue(String.class);
-                        if (github != null && !github.equals("") && !github.startsWith("http://")) {
+                        if (github != null && !github.equals("") && !github.startsWith("http://") && !github.startsWith("http:s//")) {
                             github = "http://" + github;
                         }
                         final String finalized = github;
-//                        if (github != null && !github.equals("")) {
-//                            _github.setOnClickListener(new View.OnClickListener() {
-//                                @Override
-//                                public void onClick(View v) {
-//                                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(finalized));
-//                                    startActivity(browserIntent);
-//                                }
-//                            });
-//                        }
-                        _github.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(finalized));
-                                startActivity(browserIntent);
-                            }
-                        });
+                        if (github == null && github.equals("")) {
+                            _github.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(_c);
+                                    builder.setCancelable(true);
+                                    builder.setTitle("Error!");
+                                    builder.setMessage("User has not linked his or her Github!");
+                                    builder.setPositiveButton("OK",
+                                            new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                }
+                                            });
+
+                                    AlertDialog dialog = builder.create();
+                                    dialog.show();
+                                }
+                            });
+                        } else {
+                            _github.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(finalized));
+                                    startActivity(browserIntent);
+                                }
+                            });
+                        }
+
 
                     }
 //                    else if (key.equals("skills")) {
