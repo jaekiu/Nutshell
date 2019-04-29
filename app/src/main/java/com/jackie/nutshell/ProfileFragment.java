@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -30,6 +32,7 @@ import com.google.firebase.storage.StorageReference;
 import com.jackie.nutshell.Models.Project;
 import com.jackie.nutshell.Models.User;
 import com.jackie.nutshell.Utils.FirebaseUtils;
+import com.jackie.nutshell.Utils.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,15 +88,19 @@ public class ProfileFragment extends Fragment {
 
         getUserInfo();
 
-        // Configures the tabs
-//        _about = rootview.findViewById(R.id.about);
-//        _about.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                _about.setTypeface(Typeface.DEFAULT_BOLD);
-//                _projects.setTypeface(Typeface.DEFAULT);
-//            }
-//        });
+        // Add line to current open tab
+        _about = rootview.findViewById(R.id.about);
+        // Generate bottom border only
+        LayerDrawable bottomBorder = Utils.getBorders(
+                Color.WHITE, // Background color
+                getResources().getColor(R.color.colorBrownLight), // Border color
+                0, // Left border in pixels
+                0, // Top border in pixels
+                0, // Right border in pixels
+                5 // Bottom border in pixels
+        );
+        // Finally, apply the drawable as text view background
+        _about.setBackground(bottomBorder);
 
         _projects = rootview.findViewById(R.id.projects);
         _projects.setOnClickListener(new View.OnClickListener() {
