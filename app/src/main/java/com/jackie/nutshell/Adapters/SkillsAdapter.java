@@ -2,11 +2,13 @@ package com.jackie.nutshell.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.jackie.nutshell.R;
@@ -50,7 +52,7 @@ public class SkillsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        String skill = skills.get(position);
+        final String skill = skills.get(position);
         if (convertView == null) {
             LayoutInflater layoutInflater = LayoutInflater.from(mContext);
             convertView = layoutInflater.inflate(R.layout.gridview_skills, null);
@@ -58,10 +60,18 @@ public class SkillsAdapter extends BaseAdapter {
 
         CardView cardView = convertView.findViewById(R.id.skillCard);
         TextView skillName = convertView.findViewById(R.id.skillName);
-        Button deleteBtn = convertView.findViewById(R.id.deleteSkillBtn);
-
+        ImageButton deleteBtn = convertView.findViewById(R.id.deleteSkillBtn);
+        deleteBtn.setVisibility(View.VISIBLE);
         cardView.setCardBackgroundColor(colors[position]);
         skillName.setText(skill);
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("nani", "is this clicking working?");
+                skills.remove(skill);
+                notifyDataSetChanged();
+            }
+        });
 
         return convertView;
     }
