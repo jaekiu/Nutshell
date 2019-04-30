@@ -1,4 +1,4 @@
-package com.jackie.nutshell;
+package com.jackie.nutshell.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +16,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
+import com.jackie.nutshell.ExploreActivity;
 import com.jackie.nutshell.Models.Project;
+import com.jackie.nutshell.ProfileFragment;
+import com.jackie.nutshell.R;
 import com.jackie.nutshell.Utils.FirebaseUtils;
+import com.jackie.nutshell.ViewActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /** @author jackie
@@ -32,12 +41,16 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.Projec
     private List<Project> mlist;
     private Context context;
     private Activity activity;
+    private DatabaseReference projsDBRef;
+    private DatabaseReference usersRef;
 
     public ProjectsAdapter(List<Project> list, Context context, Activity activity) {
 
         this.mlist = list;
         this.context = context;
         this.activity = activity;
+        projsDBRef = FirebaseUtils.getProjsDatabaseRef();
+        usersRef = FirebaseUtils.getUsersDatabaseRef();
     }
 
     @Override
@@ -84,7 +97,8 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.Projec
                 description = description.substring(0, 295) + "...";
             }
             String poster = currProj.getPoster();
-            if (poster.equals(FirebaseUtils.getFirebaseUser().getUid())) {
+            FirebaseUser user = FirebaseUtils.getFirebaseUser();
+            if (poster != null && user != null && poster.equals(user.getUid())) {
                 mApply.setVisibility(View.GONE);
             }
             StorageReference storageRef = FirebaseUtils.getFirebaseStorage().getReference();
@@ -121,7 +135,9 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.Projec
                                     Button apply = v.findViewById(R.id.applybtn);
                                     apply.setEnabled(false);
                                     apply.setText("Applied");
-
+                                    int i = getLayoutPosition();
+                                    Project currProj = mlist.get(i);
+                                    updateProjectsDB(currProj.getId());
                                 }
                             });
                     builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -142,4 +158,48 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.Projec
             }
         }
     }
+
+    private void updateProjectsDB(final String id) {
+        final FirebaseUser user = FirebaseUtils.getFirebaseUser();
+        projsDBRef.child(id).child("applied").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<String> applied = new ArrayList<>();
+                if (dataSnapshot.exists()) {
+                    //Key exists
+                    applied = (ArrayList<String>) dataSnapshot.getValue();
+                    if (applied == null) {
+                        applied = new ArrayList<>();
+                    }
+                }
+                applied.add(user.getUid());
+                projsDBRef.child(id).child("applied").setValue(applied);
+                usersRef.child(user.getUid()).child("appliedProjects").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        ArrayList<String> appliedProjects = new ArrayList<>();
+                        if (dataSnapshot.exists()) {
+                            appliedProjects = (ArrayList<String>) dataSnapshot.getValue();
+                            if (appliedProjects == null) {
+                                appliedProjects = new ArrayList<>();
+                            }
+                        }
+                        appliedProjects.add(id);
+                        usersRef.child(user.getUid()).child("appliedProjects").setValue(appliedProjects);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 }

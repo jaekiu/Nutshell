@@ -1,34 +1,26 @@
-package com.jackie.nutshell;
+package com.jackie.nutshell.Projects;
 
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.StorageReference;
 import com.jackie.nutshell.Models.Project;
+import com.jackie.nutshell.Adapters.ProjectsAdapter;
+import com.jackie.nutshell.R;
 import com.jackie.nutshell.Utils.FirebaseUtils;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
 
 /**
@@ -76,13 +68,15 @@ public class MyProjectsFragment extends Fragment {
                     String poster = snapshot.child("user").getValue(String.class);
                     String userId = FirebaseUtils.getFirebaseUser().getUid();
                     if (poster.equals(userId) || applied.contains(userId)) {
+                        String key = snapshot.getKey();
                         String name = snapshot.child("name").getValue(String.class);
                         String description = snapshot.child("description").getValue(String.class);
                         ArrayList<String> skills = (ArrayList<String>) snapshot.child("skills").getValue();
-                        Project p = new Project(name, description, skills, poster);
+                        Project p = new Project(key, name, description, skills, poster);
                         newProjs.add(p);
                     }
                 }
+                Collections.reverse(newProjs);
                 projects.clear();
                 projects.addAll(newProjs);
                 adapter.notifyDataSetChanged();

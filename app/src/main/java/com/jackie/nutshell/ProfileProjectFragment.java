@@ -1,10 +1,8 @@
 package com.jackie.nutshell;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.LayerDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,23 +13,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
+import com.jackie.nutshell.Adapters.ProjectsAdapter;
 import com.jackie.nutshell.Models.Project;
 import com.jackie.nutshell.Models.User;
 import com.jackie.nutshell.Utils.FirebaseUtils;
 import com.jackie.nutshell.Utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /** @author jackie
  * Created on 4/28/19.
@@ -115,13 +112,21 @@ public class ProfileProjectFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<Project> newProjs = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String name = snapshot.child("name").getValue(String.class);
-                    String description = snapshot.child("description").getValue(String.class);
-                    ArrayList<String> skills = (ArrayList<String>) snapshot.child("skills").getValue();
+                    ArrayList<String> applied = (ArrayList<String>) snapshot.child("applied").getValue();
+                    if (applied == null) {
+                        applied = new ArrayList<String>();
+                    }
                     String poster = snapshot.child("user").getValue(String.class);
-                    Project p = new Project(name, description, skills, poster);
-                    newProjs.add(p);
+                    if (poster.equals(_user.getId()) || applied.contains(_user.getId())) {
+                        String key = snapshot.getKey();
+                        String name = snapshot.child("name").getValue(String.class);
+                        String description = snapshot.child("description").getValue(String.class);
+                        ArrayList<String> skills = (ArrayList<String>) snapshot.child("skills").getValue();
+                        Project p = new Project(key, name, description, skills, poster);
+                        newProjs.add(p);
+                    }
                 }
+                Collections.reverse(newProjs);
                 projects.clear();
                 projects.addAll(newProjs);
                 mAdapter.notifyDataSetChanged();

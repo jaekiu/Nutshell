@@ -1,4 +1,4 @@
-package com.jackie.nutshell;
+package com.jackie.nutshell.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;
@@ -9,18 +9,20 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.jackie.nutshell.R;
+
 import java.util.ArrayList;
 /** @author jackie
  * Created on 4/6/19.
  * Represents the Skills Adapter for displaying the skills after searching. */
 
 /** skills adapter for SetupActivity */
-public class SkillsAdapter extends BaseAdapter {
+public class SkillsAdapterReg extends BaseAdapter {
     private Context mContext;
     private ArrayList<String> skills;
     private int[] colors;
 
-    public SkillsAdapter(Context context, ArrayList<String> skills) {
+    public SkillsAdapterReg(Context context, ArrayList<String> skills) {
         this.mContext = context;
         this.skills = skills;
         colors = new int[5];
@@ -48,19 +50,18 @@ public class SkillsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        String skill = skills.get(position);
         if (convertView == null) {
             LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-            convertView = layoutInflater.inflate(R.layout.gridview_skills, null);
+            convertView = layoutInflater.inflate(R.layout.gridview_skills_reg, null);
         }
+        if (position < 5)  {
+            String skill = skills.get(position);
+            CardView cardView = convertView.findViewById(R.id.skillCardNoX);
+            TextView skillName = convertView.findViewById(R.id.skillName);
 
-        CardView cardView = convertView.findViewById(R.id.skillCard);
-        TextView skillName = convertView.findViewById(R.id.skillName);
-        Button deleteBtn = convertView.findViewById(R.id.deleteSkillBtn);
-
-        cardView.setCardBackgroundColor(colors[position]);
-        skillName.setText(skill);
-
+            cardView.setCardBackgroundColor(colors[position]);
+            skillName.setText(skill);
+        }
         return convertView;
     }
 }

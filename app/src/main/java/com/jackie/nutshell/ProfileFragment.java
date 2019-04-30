@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,17 +25,14 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
-import com.jackie.nutshell.Models.Project;
+import com.jackie.nutshell.Adapters.SkillsAdapterReg;
 import com.jackie.nutshell.Models.User;
 import com.jackie.nutshell.Utils.FirebaseUtils;
 import com.jackie.nutshell.Utils.Utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /** @author jackie
  * Created on 4/28/19.
@@ -121,8 +117,6 @@ public class ProfileFragment extends Fragment {
                 fragment.setArguments(bundle);
                 ((ExploreActivity)_c).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         fragment).commit();
-//                Intent i = new Intent(getContext(), ProjectProfile.class);
-//                startActivity(i);
             }
         });
 

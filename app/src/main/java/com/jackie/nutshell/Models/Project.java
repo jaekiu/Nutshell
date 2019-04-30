@@ -4,17 +4,23 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Project implements Serializable {
+    private String id;
     private String name;
     private String desc;
     private ArrayList<String> skills;
     private String poster;
 
 
-    public Project(String name, String desc, ArrayList<String> skills, String poster) {
+    public Project(String id, String name, String desc, ArrayList<String> skills, String poster) {
+        this.id = id;
         this.name = name;
         this.desc = desc;
         this.skills = skills;
         this.poster = poster;
+    }
+
+    public String getId() {
+        return this.id;
     }
 
     public String getName() {

@@ -2,10 +2,6 @@ package com.jackie.nutshell;
 
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -22,13 +18,12 @@ import android.widget.Toast;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.jackie.nutshell.Login.LoginActivity;
+import com.jackie.nutshell.Adapters.SkillsAdapter;
 import com.jackie.nutshell.Searching.DataHelper;
 import com.jackie.nutshell.Searching.SkillSuggestion;
 import com.jackie.nutshell.Utils.FirebaseUtils;
@@ -37,12 +32,20 @@ import com.jackie.nutshell.Utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author jackie
+ * Created on 4/28/19.
+ * Represents the Add Project Page.
+ */
+
 public class AddProjectActivity extends AppCompatActivity {
 
     public static final long FIND_SUGGESTION_SIMULATED_DELAY = 250;
 
     private EditText editName;
+    ColorDrawable editNameBg;
     private EditText editDesc;
+    ColorDrawable editDescBg;
     private DatabaseReference projsDBRef;
     private DatabaseReference usersRef;
     private SkillsAdapter skillsAdapter;
@@ -57,7 +60,9 @@ public class AddProjectActivity extends AppCompatActivity {
         // UI stuff
         mSearchView = findViewById(R.id.search);
         editName = findViewById(R.id.editName);
+        editNameBg = (ColorDrawable) editName.getBackground();
         editDesc = findViewById(R.id.editDesc);
+        editDescBg = (ColorDrawable) editDesc.getBackground();
         projsDBRef = FirebaseUtils.getProjsDatabaseRef();
         usersRef = FirebaseUtils.getUsersDatabaseRef();
 
@@ -81,7 +86,9 @@ public class AddProjectActivity extends AppCompatActivity {
         setupSearch();
     }
 
-    /** Creates all the menu options for the toolbar (the add button). */
+    /**
+     * Creates all the menu options for the toolbar (the add button).
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -111,7 +118,7 @@ public class AddProjectActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    boolean checkFields(String name, String desc) {
+    boolean checkFields(final String name, final String desc) {
         if (skills == null || name == null || desc == null) {
             Toast.makeText(this, "Please fill out all the sections!", Toast.LENGTH_SHORT).show();
             return false;
@@ -119,41 +126,83 @@ public class AddProjectActivity extends AppCompatActivity {
             Toast.makeText(this, "Please fill out all the sections!", Toast.LENGTH_SHORT).show();
             return false;
         } else {
-            sendToProjsDatabase(name, desc);
+            final String projKey = projsDBRef.push().getKey();
+            final FirebaseUser user = FirebaseUtils.getFirebaseUser();
+            usersRef.child(user.getUid()).child("karma").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Integer karma = dataSnapshot.getValue(Integer.class);
+                    karma += 5;
+                    usersRef.child(user.getUid()).child("karma").setValue(karma);
+                    usersRef.child(user.getUid()).child("postedProjects").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            ArrayList<String> postedProjects = new ArrayList<>();
+                            if (dataSnapshot.exists()) {
+                                postedProjects = (ArrayList<String>) dataSnapshot.getValue();
+                                if (postedProjects == null) {
+                                    postedProjects = new ArrayList<>();
+                                }
+                            }
+                            postedProjects.add(projKey);
+                            usersRef.child(user.getUid()).child("postedProjects").setValue(postedProjects);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    projsDBRef.child(projKey).child("name").setValue(name);
+                    projsDBRef.child(projKey).child("description").setValue(desc);
+                    projsDBRef.child(projKey).child("user").setValue(user.getUid());
+                    projsDBRef.child(projKey).child("skills").setValue(skills);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
             return true;
         }
     }
 
-    private void sendToProjsDatabase(String name, String desc) {
-        final String key = projsDBRef.push().getKey();
-        FirebaseUser user = FirebaseUtils.getFirebaseUser();
-        projsDBRef.child(key).child("name").setValue(name);
-        projsDBRef.child(key).child("description").setValue(desc);
-        projsDBRef.child(key).child("user").setValue(user.getUid());
-        projsDBRef.child(key).child("skills").setValue(skills);
-        sendToUsersDatabase(key);
-    }
-    private void sendToUsersDatabase(final String key) {
+    private void sendToProjsDatabase(final String name, final String desc) {
+        final String projKey = projsDBRef.push().getKey();
         final FirebaseUser user = FirebaseUtils.getFirebaseUser();
-
-        usersRef.child(user.getUid()).addValueEventListener(new ValueEventListener() {
+        usersRef.child(user.getUid()).child("karma").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String key = snapshot.getKey();
-                    if (key.equals("karma")) {
-                        Integer karma = dataSnapshot.getValue(Integer.class);
-                        karma += 5;
-                        usersRef.child(user.getUid()).child("karma").setValue(karma);
-                    } else if (key.equals("postedProjects")) {
-                        ArrayList<String> postedProjects = (ArrayList<String>) dataSnapshot.getValue();
-                        if (postedProjects == null) {
-                            postedProjects = new ArrayList<>();
+                Integer karma = dataSnapshot.getValue(Integer.class);
+                karma += 5;
+                usersRef.child(user.getUid()).child("karma").setValue(karma);
+                usersRef.child(user.getUid()).child("postedProjects").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        ArrayList<String> postedProjects = new ArrayList<>();
+                        if (dataSnapshot.exists()) {
+                            postedProjects = (ArrayList<String>) dataSnapshot.getValue();
+                            if (postedProjects == null) {
+                                postedProjects = new ArrayList<>();
+                            }
                         }
-                        postedProjects.add(key);
+                        postedProjects.add(projKey);
                         usersRef.child(user.getUid()).child("postedProjects").setValue(postedProjects);
                     }
-                }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+                projsDBRef.child(projKey).child("name").setValue(name);
+                projsDBRef.child(projKey).child("description").setValue(desc);
+                projsDBRef.child(projKey).child("user").setValue(user.getUid());
+                projsDBRef.child(projKey).child("skills").setValue(skills);
             }
 
             @Override
@@ -164,7 +213,9 @@ public class AddProjectActivity extends AppCompatActivity {
 
     }
 
-    /** Sets up searching. */
+    /**
+     * Sets up searching.
+     */
     private void setupSearch() {
         mSearchView.setShowSearchKey(true);
         mSearchView.setCloseSearchOnKeyboardDismiss(true);
@@ -174,9 +225,11 @@ public class AddProjectActivity extends AppCompatActivity {
             public void onFocus() {
                 ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) mSearchView.getLayoutParams();
                 p.setMargins(0, 0, 0, 0);
+                editName.setBackgroundResource(android.R.color.transparent);
+                editDesc.setBackgroundResource(android.R.color.transparent);
                 mSearchView.requestLayout();
-                mSearchView.getLayoutParams().height= ViewGroup.LayoutParams.MATCH_PARENT;
-                mSearchView.getLayoutParams().width= ViewGroup.LayoutParams.MATCH_PARENT;
+                mSearchView.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
+                mSearchView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
             }
 
             @Override
@@ -185,7 +238,7 @@ public class AddProjectActivity extends AppCompatActivity {
                 int pixelsR = Utils.dpToPx(28, getResources());
                 ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) mSearchView.getLayoutParams();
                 p.setMargins(0, 0, pixelsR, 0);
-                mSearchView.getLayoutParams().height= pixelsH;
+                mSearchView.getLayoutParams().height = pixelsH;
                 mSearchView.getLayoutParams().width = 0;
             }
         });
@@ -193,7 +246,6 @@ public class AddProjectActivity extends AppCompatActivity {
         mSearchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
             @Override
             public void onSearchTextChanged(String oldQuery, final String newQuery) {
-
                 //get suggestions based on newQuery
                 if (!oldQuery.equals("") && newQuery.equals("")) {
                     mSearchView.clearSuggestions();
@@ -235,6 +287,8 @@ public class AddProjectActivity extends AppCompatActivity {
             @Override
             public void onSearchAction(String currentQuery) {
                 String query = "";
+                editName.setBackground(editNameBg);
+                editDesc.setBackground(editDescBg);
                 switch (currentQuery) {
                     case "Machine Learning":
                         query = "ML";
@@ -256,7 +310,9 @@ public class AddProjectActivity extends AppCompatActivity {
         });
     }
 
-    /** Adds skill to skills ArrayList (used for populating GridView). */
+    /**
+     * Adds skill to skills ArrayList (used for populating GridView).
+     */
     private void addSkill(String skill) {
         if (skills.size() == 5) {
             Toast.makeText(this, "You can only have 5 skills!", Toast.LENGTH_SHORT).show();
