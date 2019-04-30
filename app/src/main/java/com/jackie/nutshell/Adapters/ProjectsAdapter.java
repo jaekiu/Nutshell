@@ -91,16 +91,41 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.Projec
         }
         void bind(int position) {
             Project currProj = mlist.get(position);
+            String projKey = currProj.getId();
             String name = currProj.getName();
             String description = currProj.getDesc();
             if (description.length() > 300) {
                 description = description.substring(0, 295) + "...";
             }
             String poster = currProj.getPoster();
-            FirebaseUser user = FirebaseUtils.getFirebaseUser();
+            final FirebaseUser user = FirebaseUtils.getFirebaseUser();
             if (poster != null && user != null && poster.equals(user.getUid())) {
                 mApply.setVisibility(View.GONE);
+            } else {
+                projsDBRef.child(projKey).child("applied").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        ArrayList<String> applied = new ArrayList<>();
+                        if (dataSnapshot.exists()) {
+                            //Key exists
+                            applied = (ArrayList<String>) dataSnapshot.getValue();
+                            if (applied == null) {
+                                applied = new ArrayList<>();
+                            }
+                        }
+                        if (applied.contains(user.getUid())) {
+                            mApply.setEnabled(false);
+                            mApply.setText("Applied");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
             }
+
             StorageReference storageRef = FirebaseUtils.getFirebaseStorage().getReference();
             StorageReference imgRef = storageRef.child("users").child(poster + ".jpeg");
             // Handling images
