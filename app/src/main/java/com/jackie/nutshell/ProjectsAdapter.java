@@ -57,7 +57,6 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.Projec
     }
 
     public class ProjectsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private CardView mCardView;
         private TextView mProjName;
         private TextView mProjDes;
         private ImageView mProfile;
@@ -66,7 +65,6 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.Projec
 
         public ProjectsViewHolder(final View itemView) {
             super(itemView);
-            mCardView = itemView.findViewById(R.id.card);
             mProjName = itemView.findViewById(R.id.proj_name);
             mProjDes = itemView.findViewById(R.id.proj_des);
             mProfile = itemView.findViewById(R.id.profilePic);
@@ -82,7 +80,13 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.Projec
             Project currProj = mlist.get(position);
             String name = currProj.getName();
             String description = currProj.getDesc();
+            if (description.length() > 300) {
+                description = description.substring(0, 295) + "...";
+            }
             String poster = currProj.getPoster();
+            if (poster.equals(FirebaseUtils.getFirebaseUser().getUid())) {
+                mApply.setVisibility(View.GONE);
+            }
             StorageReference storageRef = FirebaseUtils.getFirebaseStorage().getReference();
             StorageReference imgRef = storageRef.child("users").child(poster + ".jpeg");
             // Handling images

@@ -133,15 +133,17 @@ public class ExploreActivity extends AppCompatActivity implements NavigationView
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_addProj:
-                toolbar.setTitle("New Project");
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new AddProjFragment()).commit();
+//                toolbar.setTitle("New Project");
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new AddProjFragment()).commit();
+                Intent i = new Intent(ExploreActivity.this, AddProjectActivity.class);
+                startActivity(i);
                 return true;
-            case R.id.nav_submitProj:
-                toolbar.setTitle("Explore");
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new ExploreFragment()).commit();
-                return true;
+//            case R.id.nav_submitProj:
+//                toolbar.setTitle("Explore");
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new ExploreFragment()).commit();
+//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -220,17 +222,20 @@ public class ExploreActivity extends AppCompatActivity implements NavigationView
                         new ProjectsFragment()).commit();
                 break;
             case R.id.nav_addProj:
-                toolbar.setTitle("New Project");
-                invalidateOptionsMenu();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new AddProjFragment()).commit();
+//                toolbar.setTitle("New Project");
+//                invalidateOptionsMenu();
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new AddProjFragment()).commit();
+                Intent i = new Intent(ExploreActivity.this, AddProjectActivity.class);
+                startActivity(i);
+
                 break;
-            case R.id.nav_submitProj:
-                toolbar.setTitle("Explore");
-                invalidateOptionsMenu();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new ExploreFragment()).commit();
-                break;
+//            case R.id.nav_submitProj:
+//                toolbar.setTitle("Explore");
+//                invalidateOptionsMenu();
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new ExploreFragment()).commit();
+//                break;
 
         }
 

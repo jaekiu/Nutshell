@@ -40,7 +40,7 @@ public class MyProjectsFragment extends Fragment {
     private DatabaseReference usersDBRef;
     private DatabaseReference projsDBRef;
     private ArrayList<Project> projects;
-    private RecyclerViewAdapter adapter;
+    private ProjectsAdapter adapter;
 
     public MyProjectsFragment() {
         // Required empty public constructor
@@ -60,7 +60,7 @@ public class MyProjectsFragment extends Fragment {
 
         mRecyclerView = v.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new RecyclerViewAdapter(projects, getContext());
+        adapter = new ProjectsAdapter(projects, getContext(), getActivity());
         mRecyclerView.setAdapter(adapter);
 
         // Realtime database retrieval.
@@ -69,12 +69,19 @@ public class MyProjectsFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<Project> newProjs = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String name = snapshot.child("name").getValue(String.class);
-                    String description = snapshot.child("description").getValue(String.class);
-                    String date = snapshot.child("date").getValue(String.class);
+                    ArrayList<String> applied = (ArrayList<String>) snapshot.child("applied").getValue();
+                    if (applied == null) {
+                        applied = new ArrayList<String>();
+                    }
                     String poster = snapshot.child("user").getValue(String.class);
-                    Project p = new Project(name, description, new String[]{}, poster);
-                    newProjs.add(p);
+                    String userId = FirebaseUtils.getFirebaseUser().getUid();
+                    if (poster.equals(userId) || applied.contains(userId)) {
+                        String name = snapshot.child("name").getValue(String.class);
+                        String description = snapshot.child("description").getValue(String.class);
+                        ArrayList<String> skills = (ArrayList<String>) snapshot.child("skills").getValue();
+                        Project p = new Project(name, description, skills, poster);
+                        newProjs.add(p);
+                    }
                 }
                 projects.clear();
                 projects.addAll(newProjs);
@@ -91,119 +98,4 @@ public class MyProjectsFragment extends Fragment {
 
         return v;
     }
-
-    public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> {
-
-        private List<Project> mlist;
-        private Context context;
-
-        public RecyclerViewAdapter(List<Project> list, Context context) {
-
-            this.mlist = list;
-            this.context = context;
-        }
-
-        @Override
-        public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(context).inflate(R.layout.cardview, parent, false);
-            return new RecyclerViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(RecyclerViewHolder holder, int position) {
-            holder.bind(position);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mlist.size();
-        }
-
-        public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-            private CardView mCardView;
-            private TextView mProjName;
-            private TextView mProjDes;
-            private ImageView mProfile;
-            private Button viewbutton;
-            private Button mApply;
-
-            public RecyclerViewHolder(final View itemView) {
-                super(itemView);
-                mCardView = itemView.findViewById(R.id.card);
-                mProjName = itemView.findViewById(R.id.proj_name);
-                mProjDes = itemView.findViewById(R.id.proj_des);
-                mProfile = itemView.findViewById(R.id.profilePic);
-                viewbutton = itemView.findViewById(R.id.viewbtn);
-                mApply = itemView.findViewById(R.id.applybtn);
-                mProfile.setOnClickListener(this);
-                viewbutton.setOnClickListener(this);
-                mApply.setOnClickListener(this);
-
-
-            }
-            void bind (int position) {
-                Project currProj = mlist.get(position);
-                String name = currProj.getName();
-                String description = currProj.getDesc();
-                String poster = currProj.getPoster();
-                StorageReference storageRef = FirebaseUtils.getFirebaseStorage().getReference();
-                StorageReference imgRef = storageRef.child("users").child(poster + ".jpeg");
-                // Handling images
-                Glide.with(context).load(imgRef).centerCrop().into(mProfile);
-                mProjName.setText(name);
-                mProjDes.setText(description);
-
-            }
-
-            @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.profilePic:
-                        Fragment fragment = new ProfileFragment();
-                        Bundle bundle = new Bundle();
-                        int i = this.getLayoutPosition();
-                        Project currProj = mlist.get(i);
-                        bundle.putString("posterId", currProj.getPoster());
-                        fragment.setArguments(bundle);
-                        ((ExploreActivity)context).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                                fragment).commit();
-                        break;
-                    case R.id.applybtn:
-                        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
-                        builder.setCancelable(true);
-                        builder.setTitle("Confirm application?");
-                        builder.setMessage("Confirming will send your profile to the poster");
-                        builder.setPositiveButton("Confirm",
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                    }
-                                });
-                        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        });
-
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-                        break;
-                    case R.id.viewbtn:
-                        Intent intent = new Intent(getActivity(), ViewActivity.class);
-                        Project currentProj = mlist.get(getAdapterPosition());
-                        intent.putExtra("Project", currentProj);
-                        startActivity(intent);
-                        break;
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-
-    }
-
 }

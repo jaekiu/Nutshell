@@ -12,8 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ViewActivity"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
+        <activity
+            android:name=".ViewActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity android:name=".Login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,6 +32,8 @@
 
         <activity android:name=".Login.SignUpActivity" />
         <activity android:name=".Login.SetupActivity" />
+        <activity android:name=".AddProjectActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"></activity>
     </application>
 
 </manifest>

@@ -134,7 +134,6 @@ public class ProfileFragment extends Fragment {
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap<String, Object> attributes = new HashMap<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String key = snapshot.getKey();
                     if (key.equals("name")) {
@@ -258,14 +257,6 @@ public class ProfileFragment extends Fragment {
 //                        attributes.put(key, value);
 //                    }
                 }
-//                String name = (String) attributes.get("name");
-//                int karma = (Integer) attributes.get("karma");
-//                String linkedin = (String) attributes.get("linkedin");
-//                String github = (String) attributes.get("github");
-//                String number = (String) attributes.get("number");
-                // ArrayList<String> skills = attributes.get("skills");
-//                _name.setText(name);
-//                _karma.setText(karma + " Karma");
             }
 
             @Override

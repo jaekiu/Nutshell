@@ -2,16 +2,19 @@ package com.jackie.nutshell;
 
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,11 +24,16 @@ import com.google.firebase.storage.StorageReference;
 import com.jackie.nutshell.Models.Project;
 import com.jackie.nutshell.Utils.FirebaseUtils;
 
+import java.util.ArrayList;
+
 public class ViewActivity extends AppCompatActivity {
     private TextView name;
     private TextView desc;
     private String poster;
     private ImageView posterpic;
+    private GridView gridview;
+    private SkillsAdapterReg skillsAdapterReg;
+    private ArrayList<String> skills = new ArrayList<>(5);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +54,8 @@ public class ViewActivity extends AppCompatActivity {
         name = findViewById(R.id.titletext);
         desc = findViewById(R.id.descText);
         posterpic = findViewById(R.id.imageView);
+        gridview = findViewById(R.id.gridview);
+
 
         Intent in= getIntent();
         Bundle b = in.getExtras();
@@ -56,14 +66,15 @@ public class ViewActivity extends AppCompatActivity {
 
             name.setText(j.getName());
             desc.setText(j.getDesc());
+            skills = j.getSkills();
             poster = j.getPoster();
             StorageReference storageRef = FirebaseUtils.getFirebaseStorage().getReference();
             StorageReference imgRef = storageRef.child("users").child(poster + ".jpeg");
             // Handling images
             Glide.with(getApplicationContext()).load(imgRef).centerCrop().into(posterpic);
-
-
-
+            skillsAdapterReg = new SkillsAdapterReg(getApplicationContext(), skills);
+            gridview.setAdapter(skillsAdapterReg);
+            skillsAdapterReg.notifyDataSetChanged();
         }
     }
 
@@ -78,8 +89,4 @@ public class ViewActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
-
-
 }

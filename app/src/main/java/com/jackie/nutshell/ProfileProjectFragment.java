@@ -117,9 +117,9 @@ public class ProfileProjectFragment extends Fragment {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String name = snapshot.child("name").getValue(String.class);
                     String description = snapshot.child("description").getValue(String.class);
-                    String date = snapshot.child("date").getValue(String.class);
+                    ArrayList<String> skills = (ArrayList<String>) snapshot.child("skills").getValue();
                     String poster = snapshot.child("user").getValue(String.class);
-                    Project p = new Project(name, description, new String[]{}, poster);
+                    Project p = new Project(name, description, skills, poster);
                     newProjs.add(p);
                 }
                 projects.clear();

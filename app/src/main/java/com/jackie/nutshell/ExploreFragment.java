@@ -24,6 +24,7 @@ import com.jackie.nutshell.Models.Project;
 import com.jackie.nutshell.Utils.FirebaseUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ExploreFragment extends Fragment {
     private RecyclerView mRecyclerView;
@@ -58,11 +59,12 @@ public class ExploreFragment extends Fragment {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String name = snapshot.child("name").getValue(String.class);
                     String description = snapshot.child("description").getValue(String.class);
-                    String date = snapshot.child("date").getValue(String.class);
                     String poster = snapshot.child("user").getValue(String.class);
-                    Project p = new Project(name, description, new String[]{}, poster);
+                    ArrayList<String> skills = (ArrayList<String>) snapshot.child("skills").getValue();
+                    Project p = new Project(name, description, skills, poster);
                     newProjs.add(p);
                 }
+                Collections.reverse(newProjs);
                 projects.clear();
                 projects.addAll(newProjs);
                 adapter.notifyDataSetChanged();

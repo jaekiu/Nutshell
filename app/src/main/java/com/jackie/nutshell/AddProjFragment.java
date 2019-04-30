@@ -1,44 +1,66 @@
 package com.jackie.nutshell;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
+import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.StorageReference;
+import com.jackie.nutshell.Login.LoginActivity;
 import com.jackie.nutshell.Searching.DataHelper;
 import com.jackie.nutshell.Searching.SkillSuggestion;
 import com.jackie.nutshell.Utils.FirebaseUtils;
 import com.jackie.nutshell.Utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class AddProjFragment extends Fragment {
+public class AddProjFragment extends Fragment  {
 
     public static final long FIND_SUGGESTION_SIMULATED_DELAY = 250;
 
     EditText editName;
     EditText editDesc;
-    private DatabaseReference usersDBRef;
     private DatabaseReference projsDBRef;
     private SkillsAdapter skillsAdapter;
     ArrayList<String> skills = new ArrayList<>();
     private FloatingSearchView mSearchView;
     private Toolbar toolbar;
+    private DrawerLayout drawer;
+    private TextView helloMenuText;
+    private ImageView profilePicMenu;
+    private FirebaseUser user;
+    private DatabaseReference usersDb;
+    private String usersName = "";
+    private List<String> messages = Arrays.asList("Explore", "Logout", "Profile", "Projects", "New Project");
 
     public AddProjFragment() { }
 
@@ -53,16 +75,32 @@ public class AddProjFragment extends Fragment {
         mSearchView = v.findViewById(R.id.search);
         this.editName = v.findViewById(R.id.editName);
         this.editDesc = v.findViewById(R.id.editDesc);
-        usersDBRef = FirebaseUtils.getUsersDatabaseRef();
         projsDBRef = FirebaseUtils.getProjsDatabaseRef();
+        user = FirebaseUtils.getFirebaseUser();
+        usersDb = FirebaseUtils.getUsersDatabaseRef();
 
         // Handling GridView for skills
         GridView gridView = v.findViewById(R.id.skillGridView);
         skillsAdapter = new SkillsAdapter(getContext(), skills);
         gridView.setAdapter(skillsAdapter);
 
-//        ExploreActivity actionBarActivity = (ExploreActivity) getActivity();
-//        Toolbar toolbar = ExploreActivity.getView().findViewById(R.id.toolbar);
+        // Other
+        ExploreActivity actionBarActivity = (ExploreActivity) getActivity();
+//        drawer = v.findViewById(R.id.drawer_layout);
+//        NavigationView navigationView = v.findViewById(R.id.nav_view);
+//        navigationView.setNavigationItemSelectedListener(this);
+//        View header = navigationView.getHeaderView(0);
+//        helloMenuText = header.findViewById(R.id.helloTextMenu);
+//        profilePicMenu = header.findViewById(R.id.profilePicMenu);
+//        setUserInfoInMenu();
+
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(actionBarActivity, drawer, toolbar,
+//                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//        drawer.addDrawerListener(toggle);
+//        toggle.syncState();
+
+
+//        Toolbar toolbar = actionBarActivity.findViewById(R.id.toolbar);
 //        actionBarActivity.setSupportActionBar(toolbar);
 //        toolbar.setTitle("Add Project");
 //        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -210,6 +248,154 @@ public class AddProjFragment extends Fragment {
             skillsAdapter.notifyDataSetChanged();
         }
     }
-
-
+//
+//
+//    private void setUserInfoInMenu() {
+//        String uid = user.getUid();
+//        DatabaseReference userSpecificDb = usersDb.child(uid).child("name");
+//        userSpecificDb.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                usersName = dataSnapshot.getValue(String.class);
+//                helloMenuText.setText("Hello " + usersName + "!");
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//            }
+//        });
+//
+//        StorageReference storageRef = FirebaseUtils.getFirebaseStorage().getReference();
+//        StorageReference imgRef = storageRef.child("users").child(user.getUid() + ".jpeg");
+//        // Handling images
+//        Glide.with(this).load(imgRef).centerCrop().into(profilePicMenu);
+//    }
+//
+//    /** Creates all the menu options for the toolbar (the add button). */
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getActivity().getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+//        return true;
+//    }
+//
+//    /** Handles selection of options for the Drawer. */
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.nav_addProj:
+//                toolbar.setTitle("New Project");
+//                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new AddProjFragment()).commit();
+//                return true;
+//            case R.id.nav_submitProj:
+//                toolbar.setTitle("Explore");
+//                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new ExploreFragment()).commit();
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
+//
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//        switch (messages.indexOf(toolbar.getTitle())) {
+//            case 0: //explore
+//                System.out.println("case 0 reached");
+//                invalidateOptionsMenu();
+//                menu.findItem(R.id.nav_submitProj).setVisible(false);
+//                menu.findItem(R.id.nav_addProj).setVisible(true);
+//                break;
+//            case 1: //logout
+//                break;
+//            case 2: //profile
+//                System.out.println("case 1 reached");
+//                invalidateOptionsMenu();
+//                menu.findItem(R.id.nav_addProj).setVisible(false);
+//                menu.findItem(R.id.nav_submitProj).setVisible(false);
+//                break;
+//            case 3: //projects
+//                invalidateOptionsMenu();
+//                menu.findItem(R.id.nav_addProj).setVisible(false);
+//                menu.findItem(R.id.nav_submitProj).setVisible(false);
+//                break;
+//            case 4: //new project
+//                invalidateOptionsMenu();
+//                menu.findItem(R.id.nav_addProj).setVisible(false);
+//                menu.findItem(R.id.nav_submitProj).setVisible(true);
+//                break;
+//        }
+//        return super.onPrepareOptionsMenu(menu);
+//    }
+//
+//    @Override
+//    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+//        switch (menuItem.getItemId()) {
+//            case R.id.nav_explore:
+//                toolbar.setTitle("Explore");
+//                invalidateOptionsMenu();
+//                ExploreFragment explore = new ExploreFragment();
+//                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//                transaction.replace(R.id.fragment_container, explore);
+//                transaction.addToBackStack(null);
+//                transaction.commit();
+//
+////                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+////                        new ExploreFragment()).commit();
+//                break;
+//            case R.id.nav_logout:
+//                toolbar.setTitle("Logout");
+//                invalidateOptionsMenu();
+//                Intent i2 = new Intent(this, LoginActivity.class);
+//                FirebaseAuth.getInstance().signOut();
+//                Toast.makeText(this, "You are now signed out.", Toast.LENGTH_SHORT).show();
+//                startActivity(i2);
+//                break;
+//            case R.id.nav_profile:
+//                toolbar.setTitle("Profile");
+//                invalidateOptionsMenu();
+//                Fragment fragment = new ProfileFragment();
+//                Bundle bundle = new Bundle();
+//                bundle.putString("posterId", user.getUid());
+//                fragment.setArguments(bundle);
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        fragment).commit();
+//                break;
+//            case R.id.nav_projects:
+//                toolbar.setTitle("Projects");
+//                invalidateOptionsMenu();
+////                Intent i3 = new Intent(this, ProjectActivity.class);
+////                startActivity(i3);
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new ProjectsFragment()).commit();
+//                break;
+//            case R.id.nav_addProj:
+//                toolbar.setTitle("New Project");
+//                invalidateOptionsMenu();
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new AddProjFragment()).commit();
+//                break;
+//            case R.id.nav_submitProj:
+//                toolbar.setTitle("Explore");
+//                invalidateOptionsMenu();
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new ExploreFragment()).commit();
+//                break;
+//
+//        }
+//
+//        drawer.closeDrawer(GravityCompat.START);
+//
+//        return true;
+//    }
+//
+//    @Override
+//    public void onBackPressed() {
+//        if (drawer.isDrawerOpen(GravityCompat.START)) {
+//            drawer.closeDrawer(GravityCompat.START);
+//        } else {
+//            super.onBackPressed();
+//        }
+//    }
 }

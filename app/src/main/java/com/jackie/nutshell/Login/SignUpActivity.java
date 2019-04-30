@@ -35,6 +35,8 @@ import com.jackie.nutshell.BuildConfig;
 import com.jackie.nutshell.R;
 import com.jackie.nutshell.Utils.FirebaseUtils;
 
+import java.util.ArrayList;
+
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 
     /** Represents Firebase Auth object. */
@@ -157,6 +159,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         usersRef.child(key).child("email").setValue(email);
         usersRef.child(key).child("name").setValue(name);
         usersRef.child(key).child("karma").setValue(0);
+        usersRef.child(key).child("postedProjects").setValue(new ArrayList<String>());
+        usersRef.child(key).child("appliedProjects").setValue(new ArrayList<String>());
         usernamesRef.child(username).child("name").setValue(name);
         Uri profileImg = Uri.parse("android.resource://" + BuildConfig.APPLICATION_ID + "/drawable/default_profile_pic"); // default profile pic
 
